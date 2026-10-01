@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BHARATH — Video Editor / Visual Storyteller</title>
+<meta name="description" content="Bharath — video editor and visual storyteller. Long-form films, brand videos and short-form edits.">
+<meta name="theme-color" content="#0A0A0A">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@200..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BHARATH — portfolio
+   dark · editorial · cinematic
+   ============================================================ */
+:root{
+  --bg:#0a0a0a;
+  --ink:#eaeae6;
+  --ink2:#a3a39c;
+  --ink3:#85857e;
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.2);
+  --accent:#e04a2f;
+  --ease:cubic-bezier(.22,.7,.25,1);
+  --pad:clamp(20px,4vw,56px);
+  --nav-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{color-scheme:dark;background:var(--bg)}
+html.locked,html.locked body{overflow:hidden}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight:350;line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{display:block;-webkit-user-drag:none;user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+::selection{background:var(--accent);color:#0a0a0a}
+:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#242424;border:2px solid var(--bg);border-radius:5px}
+
+.mono{font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:11px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+.dim{color:var(--ink3)}
+.wrap{max-width:1360px;margin-inline:auto}
+.dot{color:var(--accent)}
+
+/* ---- film grain (static, subtle) ---- */
+.grain{
+  position:fixed;inset:0;z-index:150;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   INTRO — pure CSS, ~2.4s, never a loading screen
+   ============================================================ */
+#intro{position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;animation:introOut .6s 1.9s var(--ease) forwards}
+.intro-inner{text-align:center;padding:0 24px}
+.intro-name{font-size:clamp(32px,6vw,66px);font-weight:300;letter-spacing:.42em;margin-left:.21em;color:var(--ink);animation:introName 1s .2s var(--ease) backwards}
+.intro-rule{width:min(220px,44vw);height:1px;background:var(--line2);margin:26px auto 22px;transform:scaleX(0);animation:introRule .7s .85s var(--ease) forwards}
+.intro-role{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink2);animation:introRole .6s 1.15s var(--ease) backwards}
+@keyframes introName{from{opacity:0;filter:blur(14px);transform:scale(1.05)}to{opacity:1;filter:blur(0);transform:scale(1)}}
+@keyframes introRule{to{transform:scaleX(1)}}
+@keyframes introRole{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes introOut{to{opacity:0;visibility:hidden}}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--pad);
+  border-bottom:1px solid transparent;
+  transition:background-color .45s var(--ease),border-color .45s var(--ease);
+  animation:navIn .8s 2.2s var(--ease) backwards;
+}
+#nav.solid{background:rgba(10,10,10,.92);border-bottom-color:var(--line)}
+@keyframes navIn{from{opacity:0;transform:translateY(-10px)}}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-size:13px;font-weight:500;letter-spacing:.24em}
+.rec{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:recPulse 2.8s ease-in-out infinite}
+@keyframes recPulse{0%,100%{opacity:1}50%{opacity:.25}}
+.nav-links{display:flex;gap:clamp(18px,3vw,36px);align-items:center}
+.nav-links a{position:relative;color:var(--ink2);text-decoration:none;padding:5px 0;transition:color .25s}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.burger{display:none;width:42px;height:42px;flex-direction:column;justify-content:center;align-items:center;gap:7px}
+.burger span{display:block;width:22px;height:1px;background:var(--ink);transition:transform .35s var(--ease)}
+.burger[aria-expanded="true"] span:first-child{transform:translateY(4px) rotate(45deg)}
+.burger[aria-expanded="true"] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+
+/* mobile menu */
+.menu{position:fixed;inset:0;z-index:58;background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad);opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s}
+.menu.open{opacity:1;visibility:visible}
+.menu-link{display:block;font-size:clamp(42px,11vw,60px);font-weight:300;color:var(--ink);text-decoration:none;line-height:1.3;opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.menu.open .menu-link{opacity:1;transform:none}
+.menu.open .menu-link:nth-child(1){transition-delay:.08s}
+.menu.open .menu-link:nth-child(2){transition-delay:.16s}
+.menu-foot{position:absolute;left:var(--pad);right:var(--pad);bottom:44px;display:flex;flex-wrap:wrap;gap:12px 26px}
+.menu-foot a{text-decoration:none;transition:color .25s}
+.menu-foot a:hover{color:var(--ink)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero{min-height:100vh;min-height:100svh;padding:var(--nav-h) var(--pad) 0;display:flex;flex-direction:column;position:relative}
+.hero-main{flex:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(28px,5vw,80px);max-width:1440px;margin:0 auto;width:100%;padding:24px 0}
+.hero-left{display:flex;flex-direction:column;align-items:flex-end;gap:18px;text-align:right}
+.hero-name{font-size:clamp(44px,6.5vw,88px);font-weight:300;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+.hero-role{color:var(--ink2)}
+.hero-right{display:flex;flex-direction:column;gap:16px;max-width:30ch}
+.hero-statement{font-size:clamp(19px,1.7vw,26px);font-weight:300;line-height:1.5;color:#d8d8d3}
+.hero-count{color:var(--ink3)}
+.portrait-spacer{position:relative;width:min(62vw,300px);aspect-ratio:4/5;flex:none}
+.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:26px 0 30px;max-width:1440px;margin:0 auto;width:100%}
+.hero-tags{display:flex;flex-direction:column;gap:9px;color:var(--ink3)}
+.hero-scroll{display:flex;align-items:center;gap:12px;color:var(--ink3)}
+.scroll-line{width:56px;height:1px;background:var(--line);position:relative;overflow:hidden}
+.scroll-line::after{content:"";position:absolute;top:0;left:0;width:18px;height:1px;background:var(--accent);animation:scrollDash 2.4s var(--ease) infinite}
+@keyframes scrollDash{from{transform:translateX(-20px)}to{transform:translateX(60px)}}
+
+/* hero entrance (CSS, runs right as intro lifts) */
+.in{animation:riseIn .95s var(--ease) backwards;animation-delay:var(--d,2s)}
+@keyframes riseIn{from{opacity:0;transform:translateY(26px)}}
+
+/* ============================================================
+   PORTRAIT — fixed shared element: hero center → top-right dock
+   ============================================================ */
+#portrait{display:none}
+.js #portrait{
+  display:block;position:fixed;top:calc(50% - 45px);left:calc(50% - 36px);z-index:55;
+  width:72px;height:90px;overflow:hidden;background:#141414;
+  border:1px solid transparent;border-radius:1px;padding:0;
+  transform-origin:top left;will-change:transform;cursor:default;
+  transition:border-color .45s var(--ease);
+}
+.js #portrait img{width:100%;height:100%;object-fit:cover;filter:saturate(.92) contrast(1.05);animation:portraitIn 1.1s 1.8s var(--ease) backwards}
+@keyframes portraitIn{from{opacity:0;transform:scale(1.08);filter:blur(12px)}}
+.js #portrait.docked{border-color:var(--line2);cursor:pointer}
+.js #portrait.static{position:absolute;top:0;left:0;width:100%;height:100%;transform:none;cursor:default;border-color:var(--line)}
+.js #portrait.static img{animation:none}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+section{padding:clamp(90px,11vh,150px) var(--pad)}
+#work,#more,#about{border-top:1px solid var(--line)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(40px,6vh,64px)}
+.sec-head .idx{color:var(--accent);margin-bottom:14px}
+.sec-head h2{font-size:clamp(36px,6vw,80px);font-weight:300;letter-spacing:.015em;line-height:1;text-transform:uppercase}
+.sec-head .cap{padding-bottom:8px;color:var(--ink3)}
+#more .sec-head{flex-direction:row-reverse}
+#more .sh-left{text-align:right}
+@media(max-width:640px){.sec-head{padding-right:56px}#more .sec-head{padding-right:0;padding-left:56px}#more .sh-left{text-align:left}}
+
+.row-label{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:14px 2px 18px;margin-bottom:26px}
+.row-label.mt{margin-top:clamp(48px,7vh,72px)}
+
+/* ============================================================
+   WORK GRIDS + CARDS
+   ============================================================ */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.6vw,40px)}
+.card{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.vertical{max-width:340px}
+.card-media{position:relative;display:block;width:100%;padding:0;overflow:hidden;background:#121212;border:1px solid var(--line);border-radius:2px;touch-action:manipulation;transition:border-color .38s var(--ease)}
+.r169{aspect-ratio:16/9}
+.r916{aspect-ratio:9/16}
+.card-media img,.card-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card-media img{filter:saturate(.85) brightness(.88) contrast(1.03);transform:scale(1.001);transition:filter .38s var(--ease),transform .5s var(--ease)}
+.card-media video{opacity:0;transition:opacity .5s var(--ease)}
+.card-media.previewing video{opacity:1}
+.play-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);width:44px;height:44px;border:1px solid rgba(255,255,255,.4);border-radius:50%;display:grid;place-items:center;background:rgba(10,10,10,.4);color:var(--accent);opacity:0;transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.dur{position:absolute;right:10px;bottom:10px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.1em;color:#d5d5d0;background:rgba(10,10,10,.6);padding:3px 7px;opacity:0;transition:opacity .3s var(--ease)}
+.card-title{font-size:15px;font-weight:500;letter-spacing:.01em;transition:transform .3s var(--ease)}
+.card-sub{margin-top:5px}
+.card-desc{margin-top:7px;color:var(--ink3);font-size:13px;font-weight:300;line-height:1.55;max-width:40ch}
+@media (hover:hover) and (pointer:fine){
+  .card:hover .card-media{border-color:var(--line2)}
+  .card:hover .card-media img{transform:scale(1.02);filter:saturate(1) brightness(1) contrast(1)}
+  .card:hover .card-title{transform:translateY(-2px)}
+  .card:hover .play-badge{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .card:hover .dur{opacity:1}
+  .card-media.previewing:hover .dur{opacity:0}
+}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.card.vertical{max-width:290px}}
+@media(max-width:900px){
+  .hero-main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(24px,4vh,40px)}
+  .hero-left{align-items:center;text-align:center}
+  .hero-right{align-items:center;max-width:32ch}
+  .hero-foot{flex-direction:column;align-items:center;gap:18px}
+  .hero-tags{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 22px}
+}
+@media(max-width:719px){.nav-links{display:none}.burger{display:flex}}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.card.vertical{max-width:100%}}
+
+/* ============================================================
+   ABOUT + FOOTER
+   ============================================================ */
+.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(48px,7vw,110px);align-items:start}
+.about-lead{font-size:clamp(30px,3.6vw,52px);font-weight:300;line-height:1.15}
+.about-body{margin-top:26px;font-size:clamp(16px,1.35vw,19px);font-weight:300;color:#cfcfca;line-height:1.7;max-width:56ch}
+.about-body + .about-body{margin-top:18px}
+.about-avail{margin-top:36px;display:flex;align-items:center;gap:10px}
+.about-avail i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.about-links{margin-top:42px;padding-top:26px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px clamp(20px,3vw,44px);list-style:none}
+.about-links a{display:inline-flex;align-items:center;gap:8px;color:var(--ink2);text-decoration:none;transition:color .25s}
+.about-links a svg{transition:transform .3s var(--ease)}
+.about-links a:hover{color:var(--ink)}
+.about-links a:hover svg{transform:translate(2px,-2px)}
+.about-photo{max-width:400px;justify-self:end;width:100%}
+.about-photo img{width:100%;filter:saturate(.9) contrast(1.04);border:1px solid var(--line)}
+.about-photo figcaption{margin-top:12px;color:var(--ink3)}
+@media(max-width:860px){.about-grid{grid-template-columns:1fr}.about-photo{justify-self:start;max-width:340px}}
+
+footer{border-top:1px solid var(--line);padding:44px var(--pad) 34px}
+.foot-in{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.foot-brand{font-size:15px;letter-spacing:.24em;font-weight:500}
+.foot-tag{margin-top:9px;color:var(--ink3)}
+.foot-right{display:flex;gap:28px;align-items:center}
+#toTop{display:inline-flex;align-items:center;gap:8px;color:var(--ink2);text-decoration:none;transition:color .25s}
+#toTop:hover{color:var(--ink)}
+.foot-base{max-width:1360px;margin:30px auto 0;text-align:center;color:var(--ink3)}
+
+/* ============================================================
+   MODAL PLAYER
+   ============================================================ */
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:var(--pad);opacity:0;transition:opacity .3s var(--ease)}
+.modal.open{opacity:1}
+.modal-bg{position:absolute;inset:0;background:rgba(8,8,8,.94)}
+.modal-body{position:relative;width:min(1040px,100%);display:flex;flex-direction:column;transform:translateY(16px) scale(.985);transition:transform .4s var(--ease)}
+.modal.open .modal-body{transform:none}
+.modal-body.v{width:auto;max-width:100%;margin:0 auto}
+.modal-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:14px}
+.modal-top h3{font-size:clamp(18px,2.4vw,26px);font-weight:400}
+.modal-top .modal-meta{margin-top:7px}
+.icon-btn{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;transition:border-color .25s}
+.icon-btn:hover{border-color:var(--line2)}
+.modal-media{position:relative;background:#000;border:1px solid var(--line);overflow:hidden}
+.modal-media.r169{aspect-ratio:16/9}
+.modal-media.r916{aspect-ratio:9/16;height:min(72svh,720px);margin:0 auto}
+.modal-media video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.modal-controls{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:7px 12px;background:rgba(10,10,10,.78);border-top:1px solid var(--line)}
+.m-btn{width:34px;height:34px;display:grid;place-items:center;color:var(--ink);flex:none}
+.m-btn:hover{color:#fff}
+.ic{display:grid;place-items:center}
+.m-time{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--ink2);white-space:nowrap}
+.m-track{flex:1;height:22px;display:flex;align-items:center;cursor:pointer;touch-action:none;min-width:60px}
+.m-track-line{position:relative;width:100%;height:2px;background:rgba(255,255,255,.16)}
+.m-fill{position:absolute;left:0;top:0;height:100%;width:0;background:var(--accent)}
+.modal-desc{padding-top:14px;color:var(--ink2);font-size:14px;font-weight:300;line-height:1.6;max-width:60ch}
+.modal-body.v .modal-desc{max-width:400px}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #intro{display:none}
+  .scroll-line::after{display:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ================= INTRO ================= -->
+<div id="intro" aria-hidden="true">
+  <div class="intro-inner">
+    <p class="intro-name">BHARATH</p>
+    <div class="intro-rule"></div>
+    <p class="intro-role">Video Editor / Visual Storyteller</p>
+  </div>
+</div>
+
+<!-- ================= NAV ================= -->
+<header id="nav">
+  <a class="brand" href="#hero">BHARATH<span class="rec" aria-hidden="true"></span></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="mono" href="#work">WORK</a>
+    <a class="mono" href="#about">ABOUT</a>
+  </nav>
+  <button class="burger" id="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- mobile menu -->
+<div id="menu" class="menu" aria-hidden="true">
+  <nav aria-label="Menu">
+    <a class="menu-link" href="#work">WORK</a>
+    <a class="menu-link" href="#about">ABOUT</a>
+  </nav>
+  <div class="menu-foot mono">
+    <a href="https://instagram.com/" target="_blank" rel="noopener">INSTAGRAM</a>
+    <a href="https://youtube.com/" target="_blank" rel="noopener">YOUTUBE</a>
+    <a href="mailto:hello@bharath.work">EMAIL</a>
+    <a href="https://linkedin.com/" target="_blank" rel="noopener">LINKEDIN</a>
+  </div>
+</div>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section id="hero" aria-label="Introduction">
+    <div class="hero-main">
+      <div class="hero-left in" style="--d:2.05s">
+        <h1 class="hero-name">BHARATH</h1>
+        <p class="hero-role mono">VIDEO EDITOR / VISUAL STORYTELLER</p>
+      </div>
+      <div class="portrait-spacer" aria-hidden="true"></div>
+      <div class="hero-right in" style="--d:2.2s">
+        <p class="hero-statement">I create videos that make people stop, watch, and remember<span class="dot">.</span></p>
+        <p class="hero-count mono">( 12 PROJECTS — 2023 → 2025 )</p>
+      </div>
+    </div>
+    <div class="hero-foot in" style="--d:2.35s">
+      <div class="hero-tags mono">
+        <span>VIDEO EDITING</span>
+        <span>STORYTELLING</span>
+        <span>SOCIAL CONTENT</span>
+      </div>
+      <div class="hero-scroll mono">
+        <span>SCROLL</span>
+        <span class="scroll-line" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SELECTED WORK ================= -->
+  <section id="work" aria-label="Selected work">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <div class="sh-left">
+          <p class="mono idx">01</p>
+          <h2>SELECTED WORK<span class="dot">.</span></h2>
+        </div>
+        <p class="mono cap">SIX FILMS — LONG &amp; SHORT FORM</p>
+      </header>
+
+      <div class="row-label reveal">
+        <span class="mono">LONG-FORM — 16:9</span>
+        <span class="mono dim">01 — 03</span>
+      </div>
+      <div class="grid" id="g-sel-wide"></div>
+
+      <div class="row-label mt reveal">
+        <span class="mono">SHORT-FORM — 9:16</span>
+        <span class="mono dim">04 — 06</span>
+      </div>
+      <div class="grid" id="g-sel-tall"></div>
+    </div>
+  </section>
+
+  <!-- ================= MORE WORK ================= -->
+  <section id="more" aria-label="More work">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <div class="sh-left">
+          <p class="mono idx">02</p>
+          <h2>MORE WORK<span class="dot">.</span></h2>
+        </div>
+        <p class="mono cap">REELS &amp; CLIENT WORK</p>
+      </header>
+
+      <div class="row-label reveal">
+        <span class="mono">VERTICAL — 9:16</span>
+        <span class="mono dim">07 — 09</span>
+      </div>
+      <div class="grid" id="g-more-tall"></div>
+
+      <div class="row-label mt reveal">
+        <span class="mono">HORIZONTAL — 16:9</span>
+        <span class="mono dim">10 — 12</span>
+      </div>
+      <div class="grid" id="g-more-wide"></div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about" aria-label="About">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <div class="sh-left">
+          <p class="mono idx">03</p>
+          <h2>ABOUT<span class="dot">.</span></h2>
+        </div>
+        <p class="mono cap">BASED IN INDIA — WORKING ANYWHERE</p>
+      </header>
+
+      <div class="about-grid">
+        <div>
+          <p class="about-lead reveal">I&rsquo;m Bharath<span class="dot">.</span></p>
+          <p class="about-body reveal">A video editor and visual storyteller interested in turning ordinary footage into stories people want to watch.</p>
+          <p class="about-body reveal">Most of my work lives on YouTube and Instagram — long-form films, brand videos and short-form edits. I care about rhythm, restraint, and the fraction of a second before a cut. If a frame doesn&rsquo;t earn its place, it doesn&rsquo;t stay.</p>
+          <p class="about-avail mono reveal"><i aria-hidden="true"></i>AVAILABLE FOR FREELANCE — 2025</p>
+          <ul class="about-links reveal">
+            <li><a class="mono" href="https://instagram.com/" target="_blank" rel="noopener">INSTAGRAM
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" href="https://youtube.com/" target="_blank" rel="noopener">YOUTUBE
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" href="mailto:hello@bharath.work">EMAIL
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" href="https://linkedin.com/" target="_blank" rel="noopener">LINKEDIN
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+          </ul>
+        </div>
+        <figure class="about-photo reveal">
+          <img src="https://picsum.photos/seed/bharath-edit/800/1000.jpg" alt="Bharath working at his editing desk" loading="lazy" decoding="async">
+          <figcaption class="mono">BHARATH — BETWEEN TWO CUTS</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <div class="foot-in">
+      <div>
+        <p class="foot-brand">BHARATH</p>
+        <p class="foot-tag mono">VIDEO EDITOR / VISUAL STORYTELLER</p>
+      </div>
+      <div class="foot-right mono">
+        <span id="clock" class="dim">IST —:—</span>
+        <a id="toTop" href="#hero">BACK TO TOP
+          <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M5 8.5V1.5M1.8 4.7 5 1.5l3.2 3.2"/></svg></a>
+      </div>
+    </div>
+    <p class="foot-base mono">© 2025 BHARATH — ALL CUTS FINAL</p>
+  </footer>
+</main>
+
+<!-- portrait: fixed shared element (hero center → top-right dock) -->
+<button id="portrait" type="button" aria-label="Back to top">
+  <img src="https://picsum.photos/seed/bharath-portrait/800/1000.jpg" alt="Portrait of Bharath">
+</button>
+
+<!-- ================= MODAL PLAYER ================= -->
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+  <div class="modal-bg" data-close></div>
+  <div class="modal-body" id="mBody">
+    <div class="modal-top">
+      <div>
+        <h3 id="mTitle"></h3>
+        <p class="mono modal-meta" id="mMeta"></p>
+      </div>
+      <button class="icon-btn" id="mClose" type="button" aria-label="Close player" data-close>
+        <svg viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13"/></svg>
+      </button>
+    </div>
+    <figure class="modal-media r169" id="mFig">
+      <video id="mVideo" playsinline preload="metadata"></video>
+      <div class="modal-controls">
+        <button class="m-btn" id="mPlay" type="button" aria-label="Play">
+          <span class="ic" id="icPlay"><svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 1l10 6-10 6z" fill="currentColor"/></svg></span>
+          <span class="ic" id="icPause" hidden><svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1.5 1h3v12h-3zM7.5 1h3v12h-3z" fill="currentColor"/></svg></span>
+        </button>
+        <span class="m-time" id="mTime">00:00 / 00:00</span>
+        <div class="m-track" id="mTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+          <div class="m-track-line"><div class="m-fill" id="mFill"></div></div>
+        </div>
+        <button class="m-btn" id="mMute" type="button" aria-label="Unmute">
+          <span class="ic" id="icVol" hidden><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11.5 5.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" stroke-width="1.2" fill="none"/></svg></span>
+          <span class="ic" id="icMut"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11 6l4 4M15 6l-4 4" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        </button>
+      </div>
+    </figure>
+    <p class="modal-desc" id="mDesc"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+<script>
+/* ============================================================
+   PROJECT DATA — replace thumbs / videoUrl with real work.
+   Everything else (grids, hover previews, player) updates itself.
+   ============================================================ */
+const GTB = 'https://storage.googleapis.com/gtv-videos-bucket/sample/';
+const IMG = 'https://picsum.photos/seed/';
+
+const PROJECTS = [
+  /* ---- SELECTED WORK · long-form 16:9 ---- */
+  { title:'The Quiet Hours', category:'Documentary', platform:'YouTube', year:'2024', duration:'12:48', aspect:'16/9',
+    description:'A city examined between 3 and 5 AM — slow pans, empty streets, one narrator.',
+    thumb: IMG+'quiet-hours/1280/720.jpg', videoUrl: GTB+'BigBuckBunny.mp4' },
+  { title:'Vellum', category:'Brand Film', platform:'Client', year:'2024', duration:'01:30', aspect:'16/9',
+    description:'Launch film for a small stationery label. Paper, hands, light.',
+    thumb: IMG+'vellum-paper/1280/720.jpg', videoUrl: GTB+'ForBiggerBlazes.mp4' },
+  { title:'Field Notes, Kerala', category:'Travel Film', platform:'YouTube', year:'2023', duration:'09:36', aspect:'16/9',
+    description:'Ten days of rain, backwaters and slow mornings, cut to a monsoon rhythm.',
+    thumb: IMG+'kerala-rain/1280/720.jpg', videoUrl: GTB+'ElephantsDream.mp4' },
+  /* ---- SELECTED WORK · short-form 9:16 ---- */
+  { title:'Streets at 5AM', category:'Reel', platform:'Instagram', year:'2025', duration:'00:38', aspect:'9/16',
+    description:'One street, one hour, thirty-eight seconds.',
+    thumb: IMG+'streets-5am/720/1280.jpg', videoUrl: GTB+'ForBiggerEscapes.mp4' },
+  { title:'Two Minutes of Calm', category:'Short', platform:'Instagram', year:'2024', duration:'01:54', aspect:'9:16',
+    description:'A breathing exercise edited to actually slow you down.',
+    thumb: IMG+'calm-water/720/1280.jpg', videoUrl: GTB+'ForBiggerFun.mp4' },
+  { title:'Rush Hour, Reversed', category:'Reel', platform:'Instagram', year:'2024', duration:'00:29', aspect:'9/16',
+    description:'Traffic played backwards until it looks like choreography.',
+    thumb: IMG+'rush-hour/720/1280.jpg', videoUrl: GTB+'ForBiggerJoyrides.mp4' },
+  /* ---- MORE WORK · vertical 9:16 ---- */
+  { title:'Sound On', category:'Reel', platform:'YouTube Shorts', year:'2025', duration:'00:45', aspect:'9/16',
+    description:'An edit built entirely around one sound — every cut lands on the transient.',
+    thumb: IMG+'sound-on/720/1280.jpg', videoUrl: GTB+'ForBiggerMeltdowns.mp4' },
+  { title:'Frame by Frame', category:'Series', platform:'Instagram', year:'2024', duration:'00:52', aspect:'9:16',
+    description:'Twelve films about how a single frame can carry a whole story.',
+    thumb: IMG+'frame-frame/720/1280.jpg', videoUrl: GTB+'Sintel.mp4' },
+  { title:'Monsoon Walk', category:'Short', platform:'YouTube Shorts', year:'2024', duration:'00:31', aspect:'9:16',
+    description:'Point-of-view walk through the first rain of the season.',
+    thumb: IMG+'monsoon-walk/720/1280.jpg', videoUrl: GTB+'TearsOfSteel.mp4' },
+  /* ---- MORE WORK · horizontal 16:9 ---- */
+  { title:'The Coffee Ritual', category:'Brand Film', platform:'Client', year:'2023', duration:'02:12', aspect:'16/9',
+    description:'A morning routine, re-cut as a ritual. Sixty takes, ninety shots, one cup.',
+    thumb: IMG+'coffee-ritual/1280/720.jpg', videoUrl: GTB+'SubaruOutbackOnStreetAndDirt.mp4' },
+  { title:'Wedding, Unscripted', category:'Wedding Film', platform:'Client', year:'2023', duration:'06:24', aspect:'16/9',
+    description:'No poses, no stage. Just what actually happened, in the order it felt.',
+    thumb: IMG+'wedding-unscripted/1280/720.jpg', videoUrl: GTB+'VolkswagenGTIReview.mp4' },
+  { title:'Afterhours', category:'Music Video', platform:'Client', year:'2025', duration:'03:18', aspect:'16/9',
+    description:'A night drive cut to a slow track — every headlight gets its moment.',
+    thumb: IMG+'afterhours-drive/1280/720.jpg', videoUrl: GTB+'WeAreGoingOnBullrun.mp4' },
+];
+
+/* ============================================================
+   RENDER — component-like card template
+   ============================================================ */
+const PLAY_SVG = '<svg viewBox="0 0 10 12" width="9" height="11" aria-hidden="true"><path d="M0 0l10 6-10 6z" fill="currentColor"/></svg>';
+
+function cardHTML(p, i, showDesc){
+  const vertical = p.aspect === '9/16';
+  return `
+  <article class="card reveal${vertical ? ' vertical' : ''}">
+    <button class="card-media ${vertical ? 'r916' : 'r169'}" type="button" data-i="${i}" aria-label="Play ${p.title} — ${p.duration}" aria-describedby="desc-${i}">
+      <img src="${p.thumb}" alt="" loading="lazy" decoding="async">
+      <video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+      <span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>
+      <span class="dur" aria-hidden="true">${p.duration}</span>
+    </button>
+    <div class="card-meta">
+      <h3 class="card-title">${p.title}</h3>
+      <p class="card-sub mono">${p.category} · ${p.platform} — ${p.year}</p>
+      ${showDesc && p.description ? `<p class="card-desc" id="desc-${i}">${p.description}</p>` : `<span id="desc-${i}" hidden></span>`}
+    </div>
+  </article>`;
+}
+
+function render(){
+  document.getElementById('g-sel-wide').innerHTML  = PROJECTS.slice(0,3).map((p,i)=>cardHTML(p,i,false)).join('');
+  document.getElementById('g-sel-tall').innerHTML  = PROJECTS.slice(3,6).map((p,i)=>cardHTML(p,i+3,false)).join('');
+  document.getElementById('g-more-tall').innerHTML = PROJECTS.slice(6,9).map((p,i)=>cardHTML(p,i+6,true)).join('');
+  document.getElementById('g-more-wide').innerHTML = PROJECTS.slice(9,12).map((p,i)=>cardHTML(p,i+9,true)).join('');
+}
+render();
+
+/* ============================================================
+   SETUP
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const REDUCED  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const hasGsap  = !!(window.gsap && window.ScrollTrigger);
+
+const nav      = $('#nav');
+const portrait = $('#portrait');
+const spacer   = $('.portrait-spacer');
+const intro    = $('#intro');
+
+try { history.scrollRestoration = 'manual'; scrollTo(0,0); } catch(e){}
+
+/* ---- intro: remove node once its CSS animation is done ---- */
+if (intro){
+  const rm = () => intro.remove();
+  if (REDUCED) { rm(); }
+  else {
+    intro.addEventListener('animationend', e => { if (e.animationName === 'introOut') rm(); });
+    setTimeout(rm, 3600);
+  }
+}
+
+/* ---- smooth scroll (Lenis) ---- */
+let lenis = null;
+if (hasGsap && window.Lenis && !REDUCED){
+  lenis = new Lenis({ duration: 1.1, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  lenis.stop();                                   // hold scroll during the intro
+  setTimeout(() => lenis.start(), 2350);
+}
+
+/* ---- anchor navigation ---- */
+function goTo(target){
+  if (target === '#hero' || target === 0){
+    lenis ? lenis.scrollTo(0, {duration: 1.3}) : scrollTo({top:0, behavior: REDUCED ? 'auto' : 'smooth'});
+    return;
+  }
+  const el = document.querySelector(target);
+  if (!el) return;
+  lenis ? lenis.scrollTo(el, {duration: 1.2}) : el.scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth'});
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href.length > 1 && document.querySelector(href)){ e.preventDefault(); closeMenu(); goTo(href); }
+  });
+});
+portrait.addEventListener('click', () => goTo('#hero'));
+
+/* ---- mobile menu ---- */
+const burger = $('#burger'), menu = $('#menu');
+function openMenu(){
+  menu.classList.add('open'); burger.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false');
+  document.documentElement.classList.add('locked'); lenis && lenis.stop();
+}
+function closeMenu(){
+  if (!menu.classList.contains('open')) return;
+  menu.classList.remove('open'); burger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true');
+  document.documentElement.classList.remove('locked'); lenis && lenis.start();
+}
+burger.addEventListener('click', () => menu.classList.contains('open') ? closeMenu() : openMenu());
+
+/* ============================================================
+   PORTRAIT — geometry for the hero → top-right transition
+   ============================================================ */
+const P = { hero:{x:0,y:0,s:1}, dock:{x:0,y:0,s:1} };
+
+function layout(){
+  const vw = innerWidth, vh = innerHeight;
+  const mobile = vw < 900;
+  const dw = vw < 640 ? 44 : vw < 900 ? 56 : 72;   // docked size
+  const dh = Math.round(dw * 1.25);
+  let hw, hh;
+  if (mobile){
+    hw = Math.min(vw * 0.66, 300);
+    hh = Math.min(hw * 1.25, vh * 0.5);
+    hw = hh * 0.8;
+  } else {
+    hh = Math.min(Math.max(vh * 0.56, 300), 620);
+    hw = hh * 0.8;
+  }
+  spacer.style.width  = Math.round(hw) + 'px';
+  spacer.style.height = Math.round(hh) + 'px';
+  if (STATIC_PORTRAIT) return;                      // static mode: portrait fills the spacer
+  portrait.style.width  = dw + 'px';
+  portrait.style.height = dh + 'px';
+  P.hero = { x:(vw-hw)/2, y:64 + (vh-64-hh)*(mobile ? 0.34 : 0.44), s: hw/dw };
+  P.dock = { x:vw - dw - (vw < 640 ? 16 : vw < 900 ? 24 : 32), y: vw < 640 ? 70 : 84, s: 1 };
+}
+
+/* reduced motion (or no GSAP): portrait simply lives in the hero */
+const STATIC_PORTRAIT = REDUCED || !hasGsap;
+if (STATIC_PORTRAIT){
+  portrait.classList.add('static');
+  spacer.appendChild(portrait);
+  addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 240), {passive:true});
+}
+layout();
+
+/* ============================================================
+   SCROLL ANIMATIONS (GSAP + ScrollTrigger)
+   ============================================================ */
+if (hasGsap && !REDUCED){
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  /* signature move: portrait travels center → top-right, hero text lifts away */
+  const travel = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#work', start: 'top bottom', end: 'top 8%',
+      scrub: 0.6, invalidateOnRefresh: true,
+      onUpdate(self){
+        portrait.classList.toggle('docked', self.progress > 0.92);
+        nav.classList.toggle('solid',   self.progress > 0.5);
+      }
+    }
+  });
+  travel.fromTo(portrait,
+      { x: () => P.hero.x, y: () => P.hero.y, scale: () => P.hero.s },
+      { x: () => P.dock.x, y: () => P.dock.y, scale: 1, ease: 'power2.inOut', duration: 1 }, 0)
+    .to('.hero-main', { opacity: 0, y: -70, ease: 'power1.in', duration: 0.55 }, 0.08)
+    .to('.hero-foot', { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+
+  /* the docked portrait hands the spotlight back to the About photo */
+  gsap.to(portrait, {
+    opacity: 0, ease: 'none', immediateRender: false,
+    scrollTrigger: { trigger: '#about', start: 'top 85%', end: 'top 45%', scrub: 0.5, invalidateOnRefresh: true }
+  });
+
+  /* restrained section reveals — one direction, one offset */
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.from(el, { y: 26, opacity: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+  });
+
+  ScrollTrigger.addEventListener('refreshInit', layout);
+  layout();
+  document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
+}
+
+let resizeT;
+addEventListener('resize', () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => { layout(); hasGsap && !REDUCED && ScrollTrigger.refresh(); }, 180);
+});
+
+/* ============================================================
+   HOVER PREVIEWS — poster-first, video loads only after dwell
+   ============================================================ */
+function startPreview(btn){
+  const v = btn.querySelector('video');
+  const p = PROJECTS[+btn.dataset.i];
+  if (!v || !p || !p.videoUrl) return;
+  if (!v.src) v.src = p.videoUrl;
+  v.play().catch(()=>{});
+  btn.classList.add('previewing');
+}
+function stopPreview(btn){
+  const v = btn.querySelector('video');
+  if (v && !v.paused) v.pause();
+  btn.classList.remove('previewing');
+}
+function stopAllPreviews(){ document.querySelectorAll('.card-media.previewing').forEach(stopPreview); }
+
+document.querySelectorAll('.card-media').forEach(btn => {
+  let t = null;
+  const start = () => { if (!canHover) return; clearTimeout(t); t = setTimeout(() => startPreview(btn), 360); };
+  const stop  = () => { clearTimeout(t); stopPreview(btn); };
+  btn.addEventListener('mouseenter', start);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('focus', start);
+  btn.addEventListener('blur', stop);
+});
+addEventListener('scroll', () => stopAllPreviews(), { passive: true });
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopAllPreviews(); });
+
+/* ============================================================
+   MODAL PLAYER
+   ============================================================ */
+const modal  = $('#modal'), mBody = $('#mBody'), mFig = $('#mFig');
+const mVideo = $('#mVideo'), mTitle = $('#mTitle'), mMeta = $('#mMeta'), mDesc = $('#mDesc');
+const mPlay  = $('#mPlay'), mMute = $('#mMute'), mClose = $('#mClose');
+const mTime  = $('#mTime'), mTrack = $('#mTrack'), mFill = $('#mFill');
+const icPlay = $('#icPlay'), icPause = $('#icPause'), icVol = $('#icVol'), icMut = $('#icMut');
+let lastFocus = null;
+
+const fmt = s => {
+  if (!isFinite(s)) s = 0;
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(Math.floor(s%60)).padStart(2,'0');
+};
+function syncPlay(){ icPlay.hidden = !mVideo.paused; icPause.hidden = mVideo.paused; mPlay.setAttribute('aria-label', mVideo.paused ? 'Play' : 'Pause'); }
+function syncMute(){ icVol.hidden = mVideo.muted; icMut.hidden = !mVideo.muted; mMute.setAttribute('aria-label', mVideo.muted ? 'Unmute' : 'Mute'); }
+function togglePlay(){ mVideo.paused ? mVideo.play().catch(()=>{}) : mVideo.pause(); }
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.card-media');
+  if (btn) openModal(+btn.dataset.i);
+});
+
+function openModal(i){
+  const p = PROJECTS[i];
+  if (!p || !p.videoUrl) return;
+  lastFocus = document.activeElement;
+  mTitle.textContent = p.title;
+  mMeta.textContent  = (p.category + ' · ' + p.platform + ' — ' + p.year + ' — ' + p.duration).toUpperCase();
+  mDesc.textContent  = p.description || '';
+  mDesc.hidden = !p.description;
+  const vertical = p.aspect === '9/16';
+  mFig.className = 'modal-media ' + (vertical ? 'r916' : 'r169');
+  mBody.classList.toggle('v', vertical);
+  mVideo.muted = true; syncMute();
+  mVideo.src = p.videoUrl;
+  mFill.style.width = '0%'; mTime.textContent = '00:00 / 00:00';
+  modal.hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
+  document.documentElement.classList.add('locked');
+  lenis && lenis.stop();
+  stopAllPreviews();
+  mClose.focus();
+  mVideo.play().catch(()=>{});
+  syncPlay();
+}
+function closeModal(){
+  if (modal.hidden) return;
+  mVideo.pause(); mVideo.removeAttribute('src'); mVideo.load();
+  modal.classList.remove('open');
+  document.documentElement.classList.remove('locked');
+  lenis && lenis.start();
+  setTimeout(() => { modal.hidden = true; }, 320);
+  lastFocus && lastFocus.focus && lastFocus.focus();
+}
+
+mVideo.addEventListener('loadedmetadata', () => {
+  mTime.textContent = '00:00 / ' + fmt(mVideo.duration);
+  mTrack.setAttribute('aria-valuemax', Math.floor(mVideo.duration || 0));
+});
+mVideo.addEventListener('timeupdate', () => {
+  if (!mVideo.duration) return;
+  mFill.style.width = (mVideo.currentTime / mVideo.duration * 100) + '%';
+  mTime.textContent = fmt(mVideo.currentTime) + ' / ' + fmt(mVideo.duration);
+  mTrack.setAttribute('aria-valuenow', Math.floor(mVideo.currentTime));
+});
+mVideo.addEventListener('click', togglePlay);
+mVideo.addEventListener('play',  syncPlay);
+mVideo.addEventListener('pause', syncPlay);
+mVideo.addEventListener('ended', syncPlay);
+mPlay.addEventListener('click', togglePlay);
+mMute.addEventListener('click', () => { mVideo.muted = !mVideo.muted; syncMute(); });
+modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeModal));
+
+/* scrubber */
+let seeking = false;
+function seekClientX(cx){
+  const r = mTrack.getBoundingClientRect();
+  const f = Math.min(1, Math.max(0, (cx - r.left) / r.width));
+  if (mVideo.duration) mVideo.currentTime = f * mVideo.duration;
+}
+mTrack.addEventListener('pointerdown', e => { seeking = true; mTrack.setPointerCapture(e.pointerId); seekClientX(e.clientX); });
+mTrack.addEventListener('pointermove', e => { if (seeking) seekClientX(e.clientX); });
+['pointerup','pointercancel'].forEach(ev => mTrack.addEventListener(ev, () => { seeking = false; }));
+mTrack.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
+    e.preventDefault();
+    mVideo.currentTime = Math.max(0, Math.min(mVideo.duration || 0, mVideo.currentTime + (e.key === 'ArrowLeft' ? -5 : 5)));
+  }
+});
+
+/* keyboard: Esc, Space/K, M, arrows, focus trap */
+document.addEventListener('keydown', e => {
+  if (modal.hidden){ if (e.key === 'Escape') closeMenu(); return; }
+  if (e.key === 'Escape'){ closeModal(); }
+  else if (e.key === ' ' || e.key.toLowerCase() === 'k'){
+    if (!e.target.closest('button, a, .m-track')){ e.preventDefault(); togglePlay(); }
+  }
+  else if (e.key.toLowerCase() === 'm'){ mVideo.muted = !mVideo.muted; syncMute(); }
+  else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && e.target !== mTrack){
+    mVideo.currentTime = Math.max(0, Math.min(mVideo.duration || 0, mVideo.currentTime + (e.key === 'ArrowLeft' ? -5 : 5)));
+  }
+  else if (e.key === 'Tab'){
+    const f = [...modal.querySelectorAll('button, a, [tabindex="0"]')].filter(el => !el.disabled && el.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length-1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+});
+
+/* ============================================================
+   CLOCK (IST)
+   ============================================================ */
+const clockEl = $('#clock');
+function tick(){
+  try {
+    clockEl.textContent = 'IST ' + new Date().toLocaleTimeString('en-GB', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
+  } catch(e){ clockEl.textContent = ''; }
+}
+tick(); setInterval(tick, 15000);
+</script>
+</body>
+</html>
