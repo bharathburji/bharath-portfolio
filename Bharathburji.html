@@ -13,7 +13,7 @@
 <style>
 /* ============================================================
    BHARATH — portfolio
-   dark · editorial · cinematic
+   dark · editorial · cinematic · calm
    ============================================================ */
 :root{
   --bg:#0a0a0a;
@@ -26,7 +26,9 @@
   --ease:cubic-bezier(.22,.7,.25,1);
   --pad:clamp(20px,4vw,56px);
   --nav-h:64px;
+  --dock:30px;            /* size of the portrait when docked in the nav */
 }
+@media (max-width:719px){ :root{ --dock:26px; } }
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
 html{color-scheme:dark;background:var(--bg)}
@@ -52,6 +54,10 @@ a{color:inherit}
 .wrap{max-width:1360px;margin-inline:auto}
 .dot{color:var(--accent)}
 
+/* ---- starfield: fixed, behind all content ---- */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
+
 /* ---- film grain (static, subtle) ---- */
 .grain{
   position:fixed;inset:0;z-index:150;pointer-events:none;opacity:.05;
@@ -72,7 +78,7 @@ a{color:inherit}
 @keyframes introOut{to{opacity:0;visibility:hidden}}
 
 /* ============================================================
-   NAV
+   NAV — the wordmark makes room for the arriving portrait
    ============================================================ */
 #nav{
   position:fixed;top:0;left:0;right:0;z-index:60;height:var(--nav-h);
@@ -84,9 +90,9 @@ a{color:inherit}
 }
 #nav.solid{background:rgba(10,10,10,.92);border-bottom-color:var(--line)}
 @keyframes navIn{from{opacity:0;transform:translateY(-10px)}}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-size:13px;font-weight:500;letter-spacing:.24em}
-.rec{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:recPulse 2.8s ease-in-out infinite}
-@keyframes recPulse{0%,100%{opacity:1}50%{opacity:.25}}
+.brand{display:inline-flex;align-items:center;color:var(--ink);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.24em;white-space:nowrap}
+#navSlot{display:block;width:0;height:var(--dock);flex:none;border-radius:50%}
+.nav-right{display:flex;align-items:center;gap:clamp(18px,3vw,36px)}
 .nav-links{display:flex;gap:clamp(18px,3vw,36px);align-items:center}
 .nav-links a{position:relative;color:var(--ink2);text-decoration:none;padding:5px 0;transition:color .25s}
 .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
@@ -96,6 +102,19 @@ a{color:inherit}
 .burger span{display:block;width:22px;height:1px;background:var(--ink);transition:transform .35s var(--ease)}
 .burger[aria-expanded="true"] span:first-child{transform:translateY(4px) rotate(45deg)}
 .burger[aria-expanded="true"] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+
+/* ---- sound toggle (reflects actual audio state) ---- */
+.sound{display:inline-flex;align-items:center;gap:9px;color:var(--ink2);padding:5px 0;transition:color .25s}
+.sound:hover,.sound.on{color:var(--ink)}
+.sound.attn{animation:sndAttn 1.2s var(--ease) 2}
+@keyframes sndAttn{50%{color:var(--ink)}}
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:11px}
+.eq i{display:block;width:2px;height:3px;background:var(--ink3);transition:background .35s var(--ease)}
+.sound.on .eq i{background:var(--accent)}
+.sound.on .eq i:nth-child(1){animation:eqA .9s var(--ease) infinite alternate}
+.sound.on .eq i:nth-child(2){animation:eqA .6s .12s var(--ease) infinite alternate}
+.sound.on .eq i:nth-child(3){animation:eqA 1.05s .05s var(--ease) infinite alternate}
+@keyframes eqA{from{height:3px}to{height:11px}}
 
 /* mobile menu */
 .menu{position:fixed;inset:0;z-index:58;background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad);opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s}
@@ -114,12 +133,11 @@ a{color:inherit}
 #hero{min-height:100vh;min-height:100svh;padding:var(--nav-h) var(--pad) 0;display:flex;flex-direction:column;position:relative}
 .hero-main{flex:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(28px,5vw,80px);max-width:1440px;margin:0 auto;width:100%;padding:24px 0}
 .hero-left{display:flex;flex-direction:column;align-items:flex-end;gap:18px;text-align:right}
-.hero-name{font-size:clamp(44px,6.5vw,88px);font-weight:300;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+.hero-name{font-size:clamp(40px,5.5vw,84px);font-weight:300;letter-spacing:.02em;line-height:1;text-transform:uppercase}
 .hero-role{color:var(--ink2)}
 .hero-right{display:flex;flex-direction:column;gap:16px;max-width:30ch}
 .hero-statement{font-size:clamp(19px,1.7vw,26px);font-weight:300;line-height:1.5;color:#d8d8d3}
 .hero-count{color:var(--ink3)}
-.portrait-spacer{position:relative;width:min(62vw,300px);aspect-ratio:4/5;flex:none}
 .hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:26px 0 30px;max-width:1440px;margin:0 auto;width:100%}
 .hero-tags{display:flex;flex-direction:column;gap:9px;color:var(--ink3)}
 .hero-scroll{display:flex;align-items:center;gap:12px;color:var(--ink3)}
@@ -132,20 +150,29 @@ a{color:inherit}
 @keyframes riseIn{from{opacity:0;transform:translateY(26px)}}
 
 /* ============================================================
-   PORTRAIT — fixed shared element: hero center → top-right dock
+   PORTRAIT — circular shared element
+   hero center  →  docked in the nav, beside the wordmark
    ============================================================ */
+.portrait-spacer{position:relative;flex:none;width:280px;height:280px}
+.portrait-spacer::before{           /* faint viewfinder ring around the lens */
+  content:"";position:absolute;inset:-18px;border:1px solid var(--line);
+  border-radius:50%;pointer-events:none;
+}
 #portrait{display:none}
 .js #portrait{
-  display:block;position:fixed;top:calc(50% - 45px);left:calc(50% - 36px);z-index:55;
-  width:72px;height:90px;overflow:hidden;background:#141414;
-  border:1px solid transparent;border-radius:1px;padding:0;
-  transform-origin:top left;will-change:transform;cursor:default;
-  transition:border-color .45s var(--ease);
+  display:block;position:fixed;left:0;top:0;z-index:61;
+  width:min(44vmin,340px);height:min(44vmin,340px);
+  transform:translate(calc(50vw - min(22vmin,170px)),calc(50vh - min(22vmin,170px)));
+  transform-origin:top left;
+  overflow:hidden;background:#141414;border-radius:50%;
+  border:1px solid transparent;padding:0;will-change:transform;cursor:default;
+  transition:border-color .45s var(--ease),opacity .3s var(--ease);
 }
 .js #portrait img{width:100%;height:100%;object-fit:cover;filter:saturate(.92) contrast(1.05);animation:portraitIn 1.1s 1.8s var(--ease) backwards}
 @keyframes portraitIn{from{opacity:0;transform:scale(1.08);filter:blur(12px)}}
 .js #portrait.docked{border-color:var(--line2);cursor:pointer}
-.js #portrait.static{position:absolute;top:0;left:0;width:100%;height:100%;transform:none;cursor:default;border-color:var(--line)}
+.js #portrait.menu-hidden{opacity:0;pointer-events:none}
+.js #portrait.static{position:absolute;left:0;top:0;width:100%;height:100%;transform:none;cursor:default;border-color:var(--line)}
 .js #portrait.static img{animation:none}
 
 /* ============================================================
@@ -191,7 +218,7 @@ section{padding:clamp(90px,11vh,150px) var(--pad)}
   .card-media.previewing:hover .dur{opacity:0}
 }
 @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.card.vertical{max-width:290px}}
-@media(max-width:900px){
+@media(max-width:999px){
   .hero-main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(24px,4vh,40px)}
   .hero-left{align-items:center;text-align:center}
   .hero-right{align-items:center;max-width:32ch}
@@ -202,7 +229,7 @@ section{padding:clamp(90px,11vh,150px) var(--pad)}
 @media(max-width:640px){.grid{grid-template-columns:1fr}.card.vertical{max-width:100%}}
 
 /* ============================================================
-   ABOUT + FOOTER
+   ABOUT
    ============================================================ */
 .about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(48px,7vw,110px);align-items:start}
 .about-lead{font-size:clamp(30px,3.6vw,52px);font-weight:300;line-height:1.15}
@@ -220,14 +247,44 @@ section{padding:clamp(90px,11vh,150px) var(--pad)}
 .about-photo figcaption{margin-top:12px;color:var(--ink3)}
 @media(max-width:860px){.about-grid{grid-template-columns:1fr}.about-photo{justify-self:start;max-width:340px}}
 
-footer{border-top:1px solid var(--line);padding:44px var(--pad) 34px}
-.foot-in{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+/* ============================================================
+   FOOTER + GLOBAL CTA
+   PAGE CONTENT → GET IN TOUCH → FOOTER INFORMATION
+   ============================================================ */
+footer{border-top:1px solid var(--line);padding:0 var(--pad)}
+
+/* the CTA band — one global component, lives inside the shared footer */
+.cta{display:block;text-decoration:none;color:var(--ink);padding:clamp(80px,11vh,136px) 0 clamp(64px,9vh,112px);border-bottom:1px solid var(--line)}
+.cta-in{display:block}
+.cta-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;margin-bottom:clamp(30px,4vh,48px)}
+.cta-line{display:flex;align-items:center;flex-wrap:wrap;column-gap:clamp(18px,3.5vw,56px);row-gap:10px}
+.cta-text{
+  font-size:clamp(38px,9.5vw,132px);font-weight:300;line-height:.98;
+  letter-spacing:.015em;text-transform:uppercase;max-width:100%;
+  color:#c9c9c4;
+  transition:color .45s var(--ease),transform .45s var(--ease);
+}
+.cta-arrow{
+  width:clamp(52px,8vw,116px);height:auto;aspect-ratio:3/1;flex:none;
+  color:#c9c9c4;
+  transition:color .45s var(--ease),transform .45s var(--ease);
+}
+.cta:hover .cta-text,.cta:focus-visible .cta-text{
+  color:var(--ink);
+  transform:translateX(clamp(6px,.8vw,12px));
+}
+.cta:hover .cta-arrow,.cta:focus-visible .cta-arrow{
+  color:var(--accent);
+  transform:translateX(clamp(10px,2vw,26px));
+}
+
+.foot-in{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;padding-top:44px}
 .foot-brand{font-size:15px;letter-spacing:.24em;font-weight:500}
 .foot-tag{margin-top:9px;color:var(--ink3)}
 .foot-right{display:flex;gap:28px;align-items:center}
 #toTop{display:inline-flex;align-items:center;gap:8px;color:var(--ink2);text-decoration:none;transition:color .25s}
 #toTop:hover{color:var(--ink)}
-.foot-base{max-width:1360px;margin:30px auto 0;text-align:center;color:var(--ink3)}
+.foot-base{max-width:1360px;margin:30px auto 0;padding-bottom:34px;text-align:center;color:var(--ink3)}
 
 /* ============================================================
    MODAL PLAYER
@@ -265,12 +322,15 @@ footer{border-top:1px solid var(--line);padding:44px var(--pad) 34px}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   #intro{display:none}
   .scroll-line::after{display:none}
+  .sound.attn{animation:none}
+  .sound.on .eq i{animation:none;height:9px}
   html{scroll-behavior:auto}
 }
 </style>
 </head>
 <body>
 
+<canvas id="stars" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 
 <!-- ================= INTRO ================= -->
@@ -284,14 +344,22 @@ footer{border-top:1px solid var(--line);padding:44px var(--pad) 34px}
 
 <!-- ================= NAV ================= -->
 <header id="nav">
-  <a class="brand" href="#hero">BHARATH<span class="rec" aria-hidden="true"></span></a>
-  <nav class="nav-links" aria-label="Primary">
-    <a class="mono" href="#work">WORK</a>
-    <a class="mono" href="#about">ABOUT</a>
-  </nav>
-  <button class="burger" id="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false">
-    <span></span><span></span>
-  </button>
+  <a class="brand" href="#hero">
+    <span id="navSlot" aria-hidden="true"></span>BHARATH
+  </a>
+  <div class="nav-right">
+    <button id="soundBtn" class="sound mono" type="button" aria-pressed="false" aria-label="Play background music">
+      SOUND
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="mono" href="#work">WORK</a>
+      <a class="mono" href="#about">ABOUT</a>
+    </nav>
+    <button class="burger" id="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
 </header>
 
 <!-- mobile menu -->
@@ -421,8 +489,24 @@ footer{border-top:1px solid var(--line);padding:44px var(--pad) 34px}
     </div>
   </section>
 
-  <!-- ================= FOOTER ================= -->
+  <!-- ================= FOOTER (global — CTA + info) ================= -->
   <footer>
+    <!-- GET IN TOUCH — one reusable global CTA, part of the shared footer -->
+    <a class="cta reveal" href="#about" aria-label="Get in touch">
+      <span class="wrap cta-in">
+        <span class="cta-top mono">
+          <span>04 — CONTACT</span>
+          <span class="dim">HELLO@BHARATH.WORK</span>
+        </span>
+        <span class="cta-line">
+          <span class="cta-text">GET IN TOUCH</span>
+          <svg class="cta-arrow" viewBox="0 0 72 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 12h62M52 3l11 9-11 9"/>
+          </svg>
+        </span>
+      </span>
+    </a>
+
     <div class="foot-in">
       <div>
         <p class="foot-brand">BHARATH</p>
@@ -438,9 +522,9 @@ footer{border-top:1px solid var(--line);padding:44px var(--pad) 34px}
   </footer>
 </main>
 
-<!-- portrait: fixed shared element (hero center → top-right dock) -->
+<!-- portrait: fixed circular shared element (hero center → nav, beside the wordmark) -->
 <button id="portrait" type="button" aria-label="Back to top">
-  <img src="https://picsum.photos/seed/bharath-portrait/800/1000.jpg" alt="Portrait of Bharath">
+  <img src="https://picsum.photos/seed/bharath-portrait/800/800.jpg" alt="Portrait of Bharath">
 </button>
 
 <!-- ================= MODAL PLAYER ================= -->
@@ -503,7 +587,7 @@ const PROJECTS = [
   { title:'Streets at 5AM', category:'Reel', platform:'Instagram', year:'2025', duration:'00:38', aspect:'9/16',
     description:'One street, one hour, thirty-eight seconds.',
     thumb: IMG+'streets-5am/720/1280.jpg', videoUrl: GTB+'ForBiggerEscapes.mp4' },
-  { title:'Two Minutes of Calm', category:'Short', platform:'Instagram', year:'2024', duration:'01:54', aspect:'9:16',
+  { title:'Two Minutes of Calm', category:'Short', platform:'Instagram', year:'2024', duration:'01:54', aspect:'9/16',
     description:'A breathing exercise edited to actually slow you down.',
     thumb: IMG+'calm-water/720/1280.jpg', videoUrl: GTB+'ForBiggerFun.mp4' },
   { title:'Rush Hour, Reversed', category:'Reel', platform:'Instagram', year:'2024', duration:'00:29', aspect:'9/16',
@@ -513,10 +597,10 @@ const PROJECTS = [
   { title:'Sound On', category:'Reel', platform:'YouTube Shorts', year:'2025', duration:'00:45', aspect:'9/16',
     description:'An edit built entirely around one sound — every cut lands on the transient.',
     thumb: IMG+'sound-on/720/1280.jpg', videoUrl: GTB+'ForBiggerMeltdowns.mp4' },
-  { title:'Frame by Frame', category:'Series', platform:'Instagram', year:'2024', duration:'00:52', aspect:'9:16',
+  { title:'Frame by Frame', category:'Series', platform:'Instagram', year:'2024', duration:'00:52', aspect:'9/16',
     description:'Twelve films about how a single frame can carry a whole story.',
     thumb: IMG+'frame-frame/720/1280.jpg', videoUrl: GTB+'Sintel.mp4' },
-  { title:'Monsoon Walk', category:'Short', platform:'YouTube Shorts', year:'2024', duration:'00:31', aspect:'9:16',
+  { title:'Monsoon Walk', category:'Short', platform:'YouTube Shorts', year:'2024', duration:'00:31', aspect:'9/16',
     description:'Point-of-view walk through the first rain of the season.',
     thumb: IMG+'monsoon-walk/720/1280.jpg', videoUrl: GTB+'TearsOfSteel.mp4' },
   /* ---- MORE WORK · horizontal 16:9 ---- */
@@ -571,6 +655,7 @@ const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const hasGsap  = !!(window.gsap && window.ScrollTrigger);
 
 const nav      = $('#nav');
+const slot     = $('#navSlot');
 const portrait = $('#portrait');
 const spacer   = $('.portrait-spacer');
 const intro    = $('#intro');
@@ -620,49 +705,59 @@ portrait.addEventListener('click', () => goTo('#hero'));
 const burger = $('#burger'), menu = $('#menu');
 function openMenu(){
   menu.classList.add('open'); burger.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false');
+  portrait.classList.add('menu-hidden');          // the docked avatar steps aside for the overlay
   document.documentElement.classList.add('locked'); lenis && lenis.stop();
 }
 function closeMenu(){
   if (!menu.classList.contains('open')) return;
   menu.classList.remove('open'); burger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true');
+  portrait.classList.remove('menu-hidden');
   document.documentElement.classList.remove('locked'); lenis && lenis.start();
 }
 burger.addEventListener('click', () => menu.classList.contains('open') ? closeMenu() : openMenu());
 
 /* ============================================================
-   PORTRAIT — geometry for the hero → top-right transition
+   PORTRAIT GEOMETRY
+   circle centered in the hero  →  docked beside the wordmark
    ============================================================ */
 const P = { hero:{x:0,y:0,s:1}, dock:{x:0,y:0,s:1} };
+let dockSize = 30;
 
-function layout(){
-  const vw = innerWidth, vh = innerHeight;
-  const mobile = vw < 900;
-  const dw = vw < 640 ? 44 : vw < 900 ? 56 : 72;   // docked size
-  const dh = Math.round(dw * 1.25);
-  let hw, hh;
-  if (mobile){
-    hw = Math.min(vw * 0.66, 300);
-    hh = Math.min(hw * 1.25, vh * 0.5);
-    hw = hh * 0.8;
-  } else {
-    hh = Math.min(Math.max(vh * 0.56, 300), 620);
-    hw = hh * 0.8;
-  }
-  spacer.style.width  = Math.round(hw) + 'px';
-  spacer.style.height = Math.round(hh) + 'px';
-  if (STATIC_PORTRAIT) return;                      // static mode: portrait fills the spacer
-  portrait.style.width  = dw + 'px';
-  portrait.style.height = dh + 'px';
-  P.hero = { x:(vw-hw)/2, y:64 + (vh-64-hh)*(mobile ? 0.34 : 0.44), s: hw/dw };
-  P.dock = { x:vw - dw - (vw < 640 ? 16 : vw < 900 ? 24 : 32), y: vw < 640 ? 70 : 84, s: 1 };
-}
-
-/* reduced motion (or no GSAP): portrait simply lives in the hero */
+/* reduced motion (or no GSAP): the circle simply lives in the hero */
 const STATIC_PORTRAIT = REDUCED || !hasGsap;
 if (STATIC_PORTRAIT){
   portrait.classList.add('static');
   spacer.appendChild(portrait);
   addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 240), {passive:true});
+}
+
+function layout(){
+  const vw = innerWidth, vh = innerHeight;
+  dockSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock')) || 30;
+
+  /* hero circle diameter — responsive, keeps breathing room around it */
+  let D = vw < 1000
+    ? Math.min(240, vw * 0.56, vh * 0.30)
+    : Math.min(360, vh * 0.46,  vw * 0.26);
+  D = Math.round(D);
+  spacer.style.width  = D + 'px';
+  spacer.style.height = D + 'px';
+
+  if (STATIC_PORTRAIT) return;
+
+  /* element is laid out at HERO size and scaled DOWN to the dock,
+     so it's always crisp — never an upscaled raster */
+  portrait.style.width  = D + 'px';
+  portrait.style.height = D + 'px';
+
+  /* hero position = the spacer's document coords (scroll 0 = progress 0) */
+  const r  = spacer.getBoundingClientRect();
+  const sy = window.scrollY || window.pageYOffset || 0;
+  P.hero = { x: r.left, y: r.top + sy, s: 1 };
+
+  /* dock position = the nav slot, left of the wordmark */
+  const padX = parseFloat(getComputedStyle(nav).paddingLeft);
+  P.dock = { x: padX, y: (nav.offsetHeight - dockSize) / 2, s: dockSize / D };
 }
 layout();
 
@@ -673,7 +768,10 @@ if (hasGsap && !REDUCED){
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true });
 
-  /* signature move: portrait travels center → top-right, hero text lifts away */
+  gsap.set(portrait, { x: P.hero.x, y: P.hero.y, scale: 1 });   // pre-paint, no flash
+
+  /* signature move — the circle travels center → top-left and the
+     wordmark slides right to receive it, on one scrubbed timeline */
   const travel = gsap.timeline({
     scrollTrigger: {
       trigger: '#work', start: 'top bottom', end: 'top 8%',
@@ -686,15 +784,12 @@ if (hasGsap && !REDUCED){
   });
   travel.fromTo(portrait,
       { x: () => P.hero.x, y: () => P.hero.y, scale: () => P.hero.s },
-      { x: () => P.dock.x, y: () => P.dock.y, scale: 1, ease: 'power2.inOut', duration: 1 }, 0)
+      { x: () => P.dock.x, y: () => P.dock.y, scale: () => P.dock.s, ease: 'power2.inOut', duration: 1 }, 0)
+    .fromTo(slot,
+      { width: 0, marginRight: 0 },
+      { width: () => dockSize, marginRight: () => innerWidth < 720 ? 8 : 12, ease: 'power2.inOut', duration: 1 }, 0)
     .to('.hero-main', { opacity: 0, y: -70, ease: 'power1.in', duration: 0.55 }, 0.08)
     .to('.hero-foot', { opacity: 0, ease: 'none', duration: 0.4 }, 0);
-
-  /* the docked portrait hands the spotlight back to the About photo */
-  gsap.to(portrait, {
-    opacity: 0, ease: 'none', immediateRender: false,
-    scrollTrigger: { trigger: '#about', start: 'top 85%', end: 'top 45%', scrub: 0.5, invalidateOnRefresh: true }
-  });
 
   /* restrained section reveals — one direction, one offset */
   gsap.utils.toArray('.reveal').forEach(el => {
@@ -744,6 +839,487 @@ addEventListener('scroll', () => stopAllPreviews(), { passive: true });
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopAllPreviews(); });
 
 /* ============================================================
+   AMBIENT BEAT — same music, same mix.
+   84 BPM · relaxed swung groove · soft kick · gentle snare ·
+   whispering hats · one warm bass note per bar · slow chords ·
+   sparse dreamy plucks through a soft dotted-eighth echo.
+
+   DEFAULT-ON MODEL
+   · music is ON by default on EVERY visit — no exceptions,
+     no saved mute, no legacy state (old saved values cleared)
+   · the SOUND toggle works live during the visit only
+   · one AudioContext, one scheduler, ever — no duplicates
+   · `running` = audio is actually audible right now; the toggle
+     always reflects it
+   · on load the engine initializes and ATTEMPTS to start
+   · if the browser blocks autoplay (most do), it waits silently
+   · the FIRST natural interaction starts it — no off/on dance
+   ============================================================ */
+const Sound = (() => {
+  const BPM   = 84;
+  const STEP  = 60 / BPM / 4;                  // one 16th note
+  const SWING = STEP * 0.26;                   // laid-back lo-fi swing
+  const LEVEL = 0.45;                          // default low volume
+
+  /* purge any preference saved by earlier versions, so a stale
+     "off" from past testing can never mute a future visit */
+  try { localStorage.removeItem('bharath-sound'); } catch(e){}
+
+  let intent  = true;                          // ALWAYS default ON
+  let running = false;                         // engine actually scheduling audio
+  let ducked  = false;
+
+  /* --- patterns (32 steps = 2 bars drums · 64 steps = 4 bars harmony) --- */
+  const KICK  = [0, 10, 16, 26];
+  const SNARE = [4, 12, 20, 28];
+  const HATS  = [2, 6, 10, 14, 18, 22, 26, 30];
+  const SKIP  = [15, 23];
+  const OPEN  = [30];
+
+  const CHORDS = [
+    [174.61, 220.00, 261.63, 329.63],          // Fmaj7
+    [164.81, 196.00, 246.94, 293.66],          // Em7
+    [146.83, 174.61, 220.00, 261.63],          // Dm7
+    [130.81, 164.81, 196.00, 246.94],          // Cmaj7
+  ];
+  const ROOTS = [87.31, 82.41, 73.42, 65.41];  // F2 · E2 · D2 · C2
+
+  const PLUCKS = [
+    [10, 880.00, 0.40],
+    [22, 783.99, 0.34],
+    [44, 880.00, 0.30],
+    [56, 659.25, 0.36],
+    [62, 587.33, 0.24],
+  ];
+
+  let ctx = null, bus = null, chordLP = null, delayIn = null, noiseBuf = null;
+  let timer = null, nextTime = 0, step = 0;
+  let onStateChange = null;                    // UI hook — button reflects reality
+
+  function init(){                             // built exactly once
+    if (ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC();
+
+    bus = ctx.createGain();
+    bus.gain.value = 0.0001;
+
+    const tone = ctx.createBiquadFilter();
+    tone.type = 'lowpass'; tone.frequency.value = 8800;
+    const shelf = ctx.createBiquadFilter();
+    shelf.type = 'highshelf'; shelf.frequency.value = 5200; shelf.gain.value = -3.5;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -30; comp.knee.value = 30;
+    comp.ratio.value = 2.5; comp.attack.value = .012; comp.release.value = .3;
+    bus.connect(tone); tone.connect(shelf); shelf.connect(comp); comp.connect(ctx.destination);
+
+    chordLP = ctx.createBiquadFilter();
+    chordLP.type = 'lowpass'; chordLP.frequency.value = 950;
+    chordLP.connect(bus);
+
+    delayIn = ctx.createGain();
+    const dly  = ctx.createDelay(1.5);
+    dly.delayTime.value = (60 / BPM) * 0.75;
+    const damp = ctx.createBiquadFilter();
+    damp.type = 'lowpass'; damp.frequency.value = 2400;
+    const fb = ctx.createGain(); fb.gain.value = 0.34;
+    const wet = ctx.createGain(); wet.gain.value = 0.5;
+    delayIn.connect(dly);
+    dly.connect(damp); damp.connect(fb); fb.connect(dly);
+    dly.connect(wet); wet.connect(bus);
+  }
+
+  function noise(){
+    if (noiseBuf) return noiseBuf;
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return noiseBuf;
+  }
+
+  /* iOS/Safari unlock: some builds only open the audio pipe after a
+     buffer has actually been played inside a user gesture. One silent
+     sample, inaudible, played only when the context is already running. */
+  function playSilentUnlock(){
+    try{
+      const b = ctx.createBuffer(1, 1, ctx.sampleRate);
+      const s = ctx.createBufferSource();
+      s.buffer = b; s.connect(ctx.destination); s.start(0);
+    }catch(e){}
+  }
+
+  /* ---- voices ---- */
+  function kick(t){
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(140, t);
+    o.frequency.exponentialRampToValueAtTime(58, t + 0.09);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.42, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.20);
+    o.connect(g); g.connect(bus);
+    o.start(t); o.stop(t + 0.24);
+  }
+
+  function snare(t, vel = 1){
+    const s = ctx.createBufferSource(); s.buffer = noise();
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = 1650; bp.Q.value = 0.7;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.16 * vel, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    s.connect(bp); bp.connect(g); g.connect(bus);
+    s.start(t, Math.random() * 0.12); s.stop(t + 0.13);
+    const o = ctx.createOscillator(), og = ctx.createGain();
+    o.type = 'triangle'; o.frequency.value = 180;
+    og.gain.setValueAtTime(0.055 * vel, t);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    o.connect(og); og.connect(bus);
+    o.start(t); o.stop(t + 0.08);
+  }
+
+  function hat(t, vel, open){
+    const s = ctx.createBufferSource(); s.buffer = noise();
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 7600;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 11500;
+    const g = ctx.createGain();
+    const d = open ? 0.10 : 0.028;
+    g.gain.setValueAtTime(0.042 * vel, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    s.connect(hp); hp.connect(lp); lp.connect(g); g.connect(bus);
+    s.start(t, Math.random() * 0.12); s.stop(t + d + 0.02);
+  }
+
+  function chord(t, freqs, vel){
+    freqs.forEach((f, i) => {
+      [-5, 5].forEach(det => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'triangle'; o.frequency.value = f; o.detune.value = det;
+        const v = 0.022 * vel * (i === 0 ? 1.15 : 1);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(v, t + 0.09);
+        g.gain.setTargetAtTime(v * 0.62, t + 0.09, 0.6);
+        g.gain.setTargetAtTime(0.0001, t + 1.5, 0.2);
+        o.connect(g); g.connect(chordLP);
+        o.start(t); o.stop(t + 2.8);
+      });
+    });
+  }
+
+  function bass(t, f, vel = 1){
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.10 * vel, t + 0.05);
+    g.gain.setTargetAtTime(0.0001, t + 0.45, 0.25);
+    o.connect(g); g.connect(bus);
+    o.start(t); o.stop(t + 1.3);
+  }
+
+  function pluck(t, f, vel){
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 2300;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.05 * vel, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    [-6, 6].forEach(det => {
+      const o = ctx.createOscillator();
+      o.type = 'triangle'; o.frequency.value = f; o.detune.value = det;
+      o.connect(g); o.start(t); o.stop(t + 0.6);
+    });
+    g.connect(lp); lp.connect(bus);
+    const send = ctx.createGain(); send.gain.value = 0.7;
+    lp.connect(send); send.connect(delayIn);
+  }
+
+  /* ---- sequencer ---- */
+  function scheduleStep(s, t){
+    const pos = s % 32;
+    const bar = Math.floor(s / 16) % 4;
+    const sw  = (pos % 2 === 1 || pos % 4 === 2) ? SWING : 0;
+    const tt  = t + sw;
+    const hum = 0.94 + Math.random() * 0.12;
+
+    if (KICK.includes(pos))  kick(t);
+    if (SNARE.includes(pos)) snare(t);
+    if (HATS.includes(pos))  hat(tt, ((pos === 6 || pos === 22) ? 0.8 : 0.5) * hum, false);
+    if (SKIP.includes(pos))  hat(tt, 0.26 * hum, false);
+    if (OPEN.includes(pos))  hat(tt, 0.35, true);
+
+    if (pos === 0){ chord(t, CHORDS[bar], 1); bass(t, ROOTS[bar]); }
+    if (pos === 10 && (bar === 1 || bar === 3)) chord(tt, CHORDS[bar], 0.3);
+    if (pos === 10 && bar === 3) bass(tt, 110, 0.55);
+
+    for (const [ps, f, v] of PLUCKS){
+      if (s === ps){ const psw = (ps % 2 === 1 || ps % 4 === 2) ? SWING : 0; pluck(t + psw, f, v); }
+    }
+  }
+
+  function scheduler(){
+    if (!ctx || !running || ctx.state !== 'running') return;
+    /* if the clock fell behind (throttled tab / sleep), drop missed
+       steps silently — never fire a burst of stacked notes */
+    while (nextTime < ctx.currentTime - 0.06){
+      step = (step + 1) % 64;
+      nextTime += STEP;
+    }
+    while (nextTime < ctx.currentTime + 0.18){
+      scheduleStep(step, nextTime);
+      step = (step + 1) % 64;
+      nextTime += STEP;
+    }
+  }
+
+  function setLevel(tau){
+    const now = ctx.currentTime;
+    bus.gain.cancelScheduledValues(now);
+    bus.gain.setTargetAtTime(running && !ducked ? LEVEL : 0.0001, now, tau);
+  }
+
+  /* ---- the engine: starts once, guarded, idempotent ---- */
+  function startEngine(){
+    if (running || !ctx || ctx.state !== 'running') return;
+    running = true;
+    step = 0;
+    nextTime = ctx.currentTime + 0.12;
+    clearInterval(timer);                       // exactly one scheduler, ever
+    timer = setInterval(scheduler, 40);
+    scheduler();
+    setLevel(0.8);                              // ~2s gentle fade-in
+    onStateChange && onStateChange(true);
+  }
+
+  function haltEngine(){
+    if (!running) return;
+    running = false;
+    clearInterval(timer); timer = null;
+    setLevel(0.5);                              // gentle fade-out
+    setTimeout(() => {                          // sleep the context after silence
+      if (!running && ctx && ctx.state === 'running') ctx.suspend();
+    }, 1200);
+    onStateChange && onStateChange(false);
+  }
+
+  /* attempt to start — used at load, on toggle, on visibility return,
+     and (crucially) inside the first user gesture. Never throws,
+     never blocks: if autoplay is denied, it simply waits. */
+  function attemptStart(){
+    if (!intent || running) return;
+    init();
+    if (ctx.state === 'running'){ playSilentUnlock(); startEngine(); return; }
+    const p = ctx.resume();                     // may resolve now, on first gesture, or never
+    if (p && p.then){
+      p.then(() => {
+        if (intent && !running && ctx.state === 'running'){
+          playSilentUnlock();
+          startEngine();
+        }
+      }).catch(() => { /* autoplay blocked — handled, not an error */ });
+    }
+  }
+
+  return {
+    get intent(){ return intent; },
+    get playing(){ return running; },
+    set onStateChange(fn){ onStateChange = fn; },
+    unlock(){ attemptStart(); },                // gesture-safe start attempt
+    enable(){ intent = true;  attemptStart(); },
+    disable(){ intent = false; haltEngine(); },
+    duck(d){ if (ctx){ ducked = d; if (running) setLevel(0.6); } },
+    suspend(){ if (ctx && ctx.state === 'running' && running) ctx.suspend(); },
+    resume(){ if (ctx && running && ctx.state === 'suspended') ctx.resume().catch(()=>{}); },
+  };
+})();
+
+/* ---- sound toggle — painted from ACTUAL audio state ---- */
+const soundBtn = $('#soundBtn');
+let soundTouched = false;
+
+function paintSoundBtn(on){
+  soundBtn.classList.toggle('on', on);
+  soundBtn.setAttribute('aria-pressed', String(on));
+  soundBtn.setAttribute('aria-label', on ? 'Mute background music' : 'Play background music');
+}
+
+/* whenever the engine truly starts or stops, the button follows */
+Sound.onStateChange = paintSoundBtn;
+paintSoundBtn(Sound.playing);                   // OFF until audio is genuinely audible
+
+soundBtn.addEventListener('click', () => {
+  soundTouched = true;
+  soundBtn.classList.remove('attn');
+  /* toggle from actual state — a click IS a user gesture, so
+     enabling here always starts the engine in a single press */
+  if (Sound.playing) Sound.disable();
+  else                Sound.enable();
+});
+
+/* default-on: initialize on load and try to start immediately.
+   Where the browser allows it (some desktop configs, allowed
+   autoplay settings), the beat simply begins. */
+Sound.unlock();
+
+/* if autoplay was blocked, the FIRST natural interaction — any tap,
+   click or keypress anywhere on the page — starts the beat.
+   Events on the toggle itself are excluded: it manages its own
+   state, so a click on it is never double-handled. */
+function firstGesture(e){
+  if (!Sound.intent || Sound.playing) return;
+  if (e.target && e.target.closest && e.target.closest('#soundBtn')) return;
+  Sound.unlock();
+}
+['pointerdown','touchend','keydown','click'].forEach(ev =>
+  document.addEventListener(ev, firstGesture, {
+    capture: true,
+    passive: (ev === 'pointerdown' || ev === 'touchend')
+  })
+);
+
+/* a gentle pulse on the toggle if sound is still waiting for a
+   gesture — informative, never an intrusive popup */
+setTimeout(() => { if (!soundTouched && Sound.intent && !Sound.playing) soundBtn.classList.add('attn'); }, 3800);
+
+/* sleep while the tab is hidden; resume seamlessly on return —
+   the engine state persists, so the loop never restarts */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ Sound.suspend(); }
+  else {
+    Sound.resume();
+    if (Sound.intent && !Sound.playing) Sound.unlock();
+  }
+});
+
+/* ============================================================
+   STARFIELD — a handful of tiny lights, drifting very slowly.
+   No visualizer, no tie-in to the music. Radial fade keeps the
+   center of the screen quiet. Rare sparkles. Pauses when hidden.
+   ============================================================ */
+const Stars = (() => {
+  const cv = document.getElementById('stars');
+  if (!cv || !cv.getContext) return {};
+  const g = cv.getContext('2d');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, stars = [], raf = 0, last = 0;
+
+  const COUNT = () => innerWidth < 700 ? 34 : innerWidth < 1200 ? 48 : 64;
+
+  function make(){
+    const depth = 0.25 + Math.random() * 0.75;
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      depth,
+      r: 0.15 + (0.35 + Math.random() * 1.05) * depth,
+      base: 0.16 + Math.random() * 0.40,
+      twA: 0.06 + Math.random() * 0.18,
+      twS: 0.35 + Math.random() * 0.70,
+      twP: Math.random() * Math.PI * 2,
+      vy: (1.5 + Math.random() * 4) * depth,
+      wobA: 3 + Math.random() * 9,
+      wobS: 0.05 + Math.random() * 0.12,
+      wobP: Math.random() * Math.PI * 2,
+      warm: Math.random() < 0.45,
+      canSparkle: Math.random() < 0.08,
+      spark: 0,
+      sparkAt: 40 + Math.random() * 80,
+    };
+  }
+
+  function resize(){
+    const w = innerWidth, h = innerHeight;
+    const rx = W ? w / W : 1, ry = H ? h / H : 1;
+    W = w; H = h;
+    const DPR = Math.min(devicePixelRatio || 1, 2);
+    cv.width  = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    cv.style.width  = W + 'px';
+    cv.style.height = H + 'px';
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (stars.length){ stars.forEach(s => { s.x *= rx; s.y *= ry; }); }
+    else { const n = COUNT(); for (let i = 0; i < n; i++) stars.push(make()); }
+  }
+
+  function draw(now, dt, live){
+    const t = now / 1000;
+    g.clearRect(0, 0, W, H);
+    const sy = window.scrollY || 0;
+    const cx = W / 2, cy = H * 0.44;
+    const span = H + 48;
+
+    for (const s of stars){
+      if (live){
+        s.y -= s.vy * dt;
+        if (s.y < -24){ s.y = H + 24; s.x = Math.random() * W; }
+        if (s.canSparkle){
+          if (s.spark > 0){ s.spark = Math.max(0, s.spark - dt / 1.1); }
+          else { s.sparkAt -= dt; if (s.sparkAt <= 0){ s.spark = 1; s.sparkAt = 40 + Math.random() * 80; } }
+        }
+      }
+
+      let py = s.y - sy * 0.03 * s.depth;
+      py = ((py % span) + span) % span - 24;
+      const px = s.x + (live ? Math.sin(t * s.wobS + s.wobP) * s.wobA : 0);
+
+      const dx = (px - cx) / (W * 0.5), dy = (py - cy) / (H * 0.5);
+      const dist = Math.min(1, Math.hypot(dx, dy));
+      const fade = 0.18 + 0.82 * dist * dist;
+
+      const edge = Math.min(1, (py + 24) / 48, (H + 24 - py) / 48);
+
+      let a = s.base + (live ? s.twA * Math.sin(t * s.twS + s.twP) : 0);
+      const sp = s.spark > 0 ? Math.sin(Math.PI * (1 - s.spark)) : 0;
+      a = Math.min(0.85, (a + sp * 0.55) * fade * Math.max(edge, 0));
+      if (a <= 0.01) continue;
+
+      const r = s.r * (1 + sp * 0.6);
+      const col = s.warm ? '232,222,205' : '210,220,232';
+
+      if (r >= 0.9){
+        g.beginPath();
+        g.arc(px, py, r * 3, 0, Math.PI * 2);
+        g.fillStyle = `rgba(${col},${(a * 0.16).toFixed(3)})`;
+        g.fill();
+      }
+      g.beginPath();
+      g.arc(px, py, Math.max(r, 0.5), 0, Math.PI * 2);
+      g.fillStyle = `rgba(${col},${a.toFixed(3)})`;
+      g.fill();
+    }
+  }
+
+  function frame(now){
+    const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
+    last = now;
+    draw(now, dt, true);
+    raf = requestAnimationFrame(frame);
+  }
+
+  function start(){
+    if (reduced){ draw(0, 0, false); return; }
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+
+  resize();
+  start();
+
+  let rt;
+  addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { resize(); if (reduced) draw(0, 0, false); }, 200);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden){ cancelAnimationFrame(raf); raf = 0; }
+    else if (!reduced && !raf){ last = performance.now(); raf = requestAnimationFrame(frame); }
+  });
+
+  return {};
+})();
+
+/* ============================================================
    MODAL PLAYER
    ============================================================ */
 const modal  = $('#modal'), mBody = $('#mBody'), mFig = $('#mFig');
@@ -784,6 +1360,7 @@ function openModal(i){
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
   document.documentElement.classList.add('locked');
   lenis && lenis.stop();
+  Sound.duck(true);                             /* the beat steps aside for the film */
   stopAllPreviews();
   mClose.focus();
   mVideo.play().catch(()=>{});
@@ -795,6 +1372,7 @@ function closeModal(){
   modal.classList.remove('open');
   document.documentElement.classList.remove('locked');
   lenis && lenis.start();
+  Sound.duck(false);                            /* …and eases back when it's over */
   setTimeout(() => { modal.hidden = true; }, 320);
   lastFocus && lastFocus.focus && lastFocus.focus();
 }
@@ -858,12 +1436,12 @@ document.addEventListener('keydown', e => {
    CLOCK (IST)
    ============================================================ */
 const clockEl = $('#clock');
-function tick(){
+function tickClock(){
   try {
     clockEl.textContent = 'IST ' + new Date().toLocaleTimeString('en-GB', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
   } catch(e){ clockEl.textContent = ''; }
 }
-tick(); setInterval(tick, 15000);
+tickClock(); setInterval(tickClock, 15000);
 </script>
 </body>
 </html>
