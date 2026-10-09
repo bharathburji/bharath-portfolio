@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BHARATH — Video Editor / Visual Storyteller</title>
+<meta name="description" content="Bharath — video editor and visual storyteller. Long-form films, brand videos and short-form edits.">
+<meta name="theme-color" content="#0A0A0A">
+<script>
+document.documentElement.classList.add('js');
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('pre-intro');
+</script>
+<link rel="preload" as="image" href="https://picsum.photos/seed/bharath-portrait/800/800.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@200..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BHARATH — portfolio
+   dark · editorial · cinematic · calm
+   ============================================================ */
+:root{
+  --bg:#0a0a0a;
+  --ink:#eaeae6;
+  --ink2:#a3a39c;
+  --ink3:#85857e;
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.2);
+  --accent:#e04a2f;
+  --ease:cubic-bezier(.22,.7,.25,1);
+  --pad:clamp(20px,4vw,56px);
+  --nav-h:64px;
+  --dock:30px;
+}
+@media (max-width:719px){ :root{ --dock:26px; } }
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{color-scheme:dark;background:var(--bg)}
+html.locked,html.locked body{overflow:hidden}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight:350;line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{display:block;-webkit-user-drag:none;user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+::selection{background:var(--accent);color:#0a0a0a}
+:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#242424;border:2px solid var(--bg);border-radius:5px}
+
+.mono{font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:11px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+.dim{color:var(--ink3)}
+.wrap{max-width:1360px;margin-inline:auto}
+.dot{color:var(--accent)}
+
+/* ---- starfield: fixed, behind all content ---- */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
+
+/* ---- film grain (static, subtle) ---- */
+.grain{
+  position:fixed;inset:0;z-index:150;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   SYSTEM 1 · OPENING — "THE CUT"
+   A full-screen scene: three centered lanes, a playhead sweep,
+   a razor cut, and the clips split apart like doors to reveal
+   the real portfolio through the gap. Runs once per session.
+   ============================================================ */
+html.pre-intro #nav,html.pre-intro main,html.pre-intro #portrait{visibility:hidden}
+#intro{
+  position:fixed;top:0;left:0;right:0;height:100dvh;z-index:200;
+  display:grid;place-items:center;
+}
+html:not(.js) #intro{display:none}
+
+/* the cover is two flush half-screen panels — the "doors" that
+   will later part along the cut line. Overlapped 2px to kill any
+   sub-pixel seam while closed. */
+.cut-door{position:absolute;top:0;bottom:0;width:calc(50% + 2px);background:var(--bg);z-index:1}
+.cut-door.l{left:0}
+.cut-door.r{right:0}
+.door-edge{position:absolute;top:0;bottom:0;width:1px;background:rgba(234,234,230,.35);opacity:0}
+.cut-door.l .door-edge{right:0}
+.cut-door.r .door-edge{left:0}
+
+/* the scene is shifted left by half the tag gutter so that the
+   TRACKS (and therefore the clips) are centered exactly on the
+   screen's vertical midline — the razor, the door seam and the
+   clip split all land on the same pixel. */
+.cut-scene{
+  --tagw:30px;--tgap:18px;
+  position:relative;z-index:2;
+  width:min(80vw,880px);
+  transform:translateX(calc((var(--tagw) + var(--tgap)) / -2));
+}
+.cut-timecode{
+  font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  font-size:clamp(15px,2vw,21px);font-weight:400;letter-spacing:.14em;
+  color:var(--ink);text-align:center;margin-bottom:42px;opacity:0;
+  transform:translateX(calc((var(--tagw) + var(--tgap)) / 2));
+}
+.cut-board{position:relative}
+.cut-lane{display:flex;align-items:center;gap:var(--tgap);height:38px;transform:scaleX(0);transform-origin:left center}
+.cut-lane + .cut-lane{margin-top:26px}
+.cut-lane.a1{height:26px}
+.cut-tag{
+  width:var(--tagw);flex:none;
+  font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  font-size:12px;letter-spacing:.14em;color:var(--ink2);
+}
+.cut-track{position:relative;flex:1;height:100%}
+.cut-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.14)}
+.cut-clip{position:absolute;top:50%;transform:translateY(-50%);height:30px;left:0;width:100%;scaleX:0;transform-origin:left center}
+.cut-lane.a1 .cut-clip{height:20px}
+/* two overlaid halves, each clipped to its side of the cut —
+   together they read as ONE clip; after the cut they are two
+   real pieces, borders, labels and all */
+.cut-half{
+  position:absolute;inset:0;
+  border:1px solid var(--line2);background:rgba(255,255,255,.03);
+  display:flex;align-items:center;justify-content:center;
+}
+.cut-half.l{clip-path:inset(0 50% 0 0)}
+.cut-half.r{clip-path:inset(0 0 0 50%)}
+.cut-half i{
+  font-style:normal;
+  font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  font-size:11px;letter-spacing:.22em;color:var(--ink2);white-space:nowrap;
+}
+/* the A1 waveform — an identical copy inside each half, so the
+   wave reads as one until the cut slices it too */
+.cut-wave{position:absolute;inset:0}
+.cut-wave b{position:absolute;top:50%;transform:translateY(-50%);width:2px;background:currentColor}
+.wd,.wl{position:absolute;inset:0}
+.wd{color:rgba(234,234,230,.18)}
+.wl{color:var(--ink2)}
+.cut-half.l .wl{clip-path:inset(0 calc(100% - var(--phl,0%)) 0 0)}
+.cut-half.r .wl{clip-path:inset(0 calc(100% - var(--phr,0%)) 0 0)}
+/* the sweeping playhead */
+.cut-ph{
+  position:absolute;top:-14px;bottom:-14px;z-index:3;
+  left:calc(var(--tagw) + var(--tgap));width:1px;
+  background:var(--accent);opacity:0;will-change:transform;
+}
+.cut-ph::before{content:"";position:absolute;top:0;left:-3.5px;border:4px solid transparent;border-top:6px solid var(--accent)}
+/* the razor — a full-height bright line at the screen's midline */
+.cut-razor{
+  position:fixed;top:0;bottom:0;left:50%;width:1px;margin-left:-.5px;
+  background:var(--ink);opacity:0;transform:scaleY(0);transform-origin:center;
+  z-index:3;will-change:transform,opacity;
+}
+/* the CUT flag, aligned to the cut line */
+.cut-flag{
+  position:absolute;bottom:-36px;
+  left:calc((100% + var(--tagw) + var(--tgap)) / 2);
+  transform:translateX(-50%);
+  font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--ink2);opacity:0;white-space:nowrap;
+}
+@media (max-width:640px){
+  .cut-scene{--tagw:32px;--tgap:14px;width:92vw}
+  .cut-tag{font-size:12px}
+  .cut-half i{font-size:10px;letter-spacing:.18em}
+  .cut-timecode{font-size:15px;margin-bottom:32px}
+  .cut-lane{height:34px}
+  .cut-clip{height:26px}
+  .cut-lane + .cut-lane{margin-top:20px}
+  .cut-lane.a1{height:22px}
+  .cut-lane.a1 .cut-clip{height:18px}
+  .cut-flag{bottom:-30px}
+}
+
+/* ============================================================
+   SYSTEM 2 · LOADING / BUFFERING / NETWORK TIMELINE
+   Appears only past ~400ms of genuine waiting. Real progress
+   only. Never a spinner, never fake numbers. NEVER the intro.
+   ============================================================ */
+.lt{pointer-events:none;user-select:none;font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace}
+.lt-inner{width:100%}
+.lt-rows{position:relative;display:flex;flex-direction:column;gap:11px}
+.lt-row{display:flex;align-items:center;gap:10px;height:15px}
+.lt-tag{width:20px;flex:none;font-size:9px;letter-spacing:.14em;color:var(--ink3)}
+.lt-track{position:relative;flex:1;height:100%}
+.lt-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.lt-clip{position:absolute;top:50%;transform:translateY(-50%);height:11px;border:1px solid var(--line2);background:var(--bg);display:flex;align-items:center;padding:0 7px}
+.lt-clip i{font-style:normal;font-size:8px;letter-spacing:.16em;color:var(--ink2);white-space:nowrap}
+.lt-wave{position:relative;flex:1;height:13px;--ph:0%}
+.lt-wave span{position:absolute;top:50%;transform:translateY(-50%);width:1.5px;background:currentColor}
+.lt-ph{position:absolute;top:-5px;bottom:-5px;left:30px;width:1px;background:var(--accent);transition:transform .25s var(--ease)}
+.lt-ph::before{content:"";position:absolute;top:-1px;left:-3px;border:3.5px solid transparent;border-top:4.5px solid var(--accent)}
+.lt-idle .lt-ph{animation:ltPulse 1.5s var(--ease) infinite}
+@keyframes ltPulse{50%{opacity:.2}}
+.lt-sub{margin-top:12px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.lt-status{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.lt-dot{width:5px;height:5px;background:var(--accent);flex:none;animation:ltBlink 1.3s var(--ease) infinite}
+@keyframes ltBlink{50%{opacity:.15}}
+.lt.done .lt-dot{animation:none;background:var(--ink3)}
+.lt.done .lt-status{color:var(--ink)}
+.lt-out{opacity:0;transition:opacity .32s var(--ease)}
+.lt-modal{position:absolute;inset:0;display:grid;place-items:center;background:rgba(10,10,10,.55);pointer-events:none}
+.lt-modal .lt-inner{width:min(320px,80%)}
+.lt-err{display:flex;flex-direction:column;align-items:center;gap:16px;font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace}
+.lt-err-t{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.lt-retry{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);cursor:pointer;padding:8px 14px;border:1px solid var(--line);background:var(--bg);pointer-events:auto;transition:color .25s,border-color .25s}
+.lt-retry svg{color:var(--accent)}
+.lt-retry:hover{color:var(--ink);border-color:var(--line2)}
+.net{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);z-index:130;width:min(440px,calc(100vw - 32px));background:rgba(10,10,10,.94);border:1px solid var(--line);padding:18px 20px 16px;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),transform .4s var(--ease),visibility .4s;pointer-events:none;font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace}
+.net.in{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.net-head{margin-bottom:14px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+/* failed card asset */
+.card-offline{position:absolute;inset:0;z-index:3;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--bg)}
+.card-media.asset-offline .card-offline{display:flex}
+.card-media.asset-offline > img{visibility:hidden}
+.card-media.asset-offline .play-badge,.card-media.asset-offline .dur{opacity:0!important}
+.co-t{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+.co-retry{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);cursor:pointer;padding:6px 10px;border:1px solid var(--line);pointer-events:auto;transition:color .25s,border-color .25s}
+.co-retry svg{color:var(--accent)}
+.co-retry:hover{color:var(--ink);border-color:var(--line2)}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--pad);
+  border-bottom:1px solid transparent;
+  transition:background-color .45s var(--ease),border-color .45s var(--ease);
+}
+#nav.solid{background:rgba(10,10,10,.92);border-bottom-color:var(--line)}
+.brand{display:inline-flex;align-items:center;color:var(--ink);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.24em;white-space:nowrap}
+#navSlot{display:block;width:0;height:var(--dock);flex:none;border-radius:50%}
+.nav-right{display:flex;align-items:center;gap:clamp(18px,3vw,36px)}
+.nav-links{display:flex;gap:clamp(18px,3vw,36px);align-items:center}
+.nav-links a{position:relative;color:var(--ink2);text-decoration:none;padding:5px 0;transition:color .25s}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.burger{display:none;width:42px;height:42px;flex-direction:column;justify-content:center;align-items:center;gap:7px}
+.burger span{display:block;width:22px;height:1px;background:var(--ink);transition:transform .35s var(--ease)}
+.burger[aria-expanded="true"] span:first-child{transform:translateY(4px) rotate(45deg)}
+.burger[aria-expanded="true"] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+
+/* ---- sound toggle (reflects actual audio state) ---- */
+.sound{display:inline-flex;align-items:center;gap:9px;color:var(--ink2);padding:5px 0;transition:color .25s}
+.sound:hover,.sound.on{color:var(--ink)}
+.sound.attn{animation:sndAttn 1.2s var(--ease) 2}
+@keyframes sndAttn{50%{color:var(--ink)}}
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:11px}
+.eq i{display:block;width:2px;height:3px;background:var(--ink3);transition:background .35s var(--ease)}
+.sound.on .eq i{background:var(--accent)}
+.sound.on .eq i:nth-child(1){animation:eqA .9s var(--ease) infinite alternate}
+.sound.on .eq i:nth-child(2){animation:eqA .6s .12s var(--ease) infinite alternate}
+.sound.on .eq i:nth-child(3){animation:eqA 1.05s .05s var(--ease) infinite alternate}
+@keyframes eqA{from{height:3px}to{height:11px}}
+
+/* mobile menu */
+.menu{position:fixed;inset:0;z-index:58;background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad);opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s}
+.menu.open{opacity:1;visibility:visible}
+.menu-link{display:block;font-size:clamp(42px,11vw,60px);font-weight:300;color:var(--ink);text-decoration:none;line-height:1.3;opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.menu.open .menu-link{opacity:1;transform:none}
+.menu.open .menu-link:nth-child(1){transition-delay:.08s}
+.menu.open .menu-link:nth-child(2){transition-delay:.16s}
+.menu-foot{position:absolute;left:var(--pad);right:var(--pad);bottom:44px;display:flex;flex-wrap:wrap;gap:12px 26px}
+.menu-foot a{text-decoration:none;transition:color .25s}
+.menu-foot a:hover{color:var(--ink)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero{min-height:100vh;min-height:100svh;padding:var(--nav-h) var(--pad) 0;display:flex;flex-direction:column;position:relative}
+.hero-main{flex:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(28px,5vw,80px);max-width:1440px;margin:0 auto;width:100%;padding:24px 0}
+.hero-left{display:flex;flex-direction:column;align-items:flex-end;gap:18px;text-align:right}
+.hero-name{font-size:clamp(40px,5.5vw,84px);font-weight:300;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+.hero-role{color:var(--ink2)}
+.hero-right{display:flex;flex-direction:column;gap:16px;max-width:30ch}
+.hero-statement{font-size:clamp(19px,1.7vw,26px);font-weight:300;line-height:1.5;color:#d8d8d3}
+.hero-count{color:var(--ink3)}
+.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:26px 0 30px;max-width:1440px;margin:0 auto;width:100%}
+.hero-tags{display:flex;flex-direction:column;gap:9px;color:var(--ink3)}
+.hero-scroll{display:flex;align-items:center;gap:12px;color:var(--ink3)}
+.scroll-line{width:56px;height:1px;background:var(--line);position:relative;overflow:hidden}
+.scroll-line::after{content:"";position:absolute;top:0;left:0;width:18px;height:1px;background:var(--accent);animation:scrollDash 2.4s var(--ease) infinite}
+@keyframes scrollDash{from{transform:translateX(-20px)}to{transform:translateX(60px)}}
+
+/* ============================================================
+   PORTRAIT — circular shared element
+   ============================================================ */
+.portrait-spacer{position:relative;flex:none;width:280px;height:280px}
+.portrait-spacer::before{
+  content:"";position:absolute;inset:-18px;border:1px solid var(--line);
+  border-radius:50%;pointer-events:none;
+}
+#portrait{display:none}
+.js #portrait{
+  display:block;position:fixed;left:0;top:0;z-index:61;
+  width:min(44vmin,340px);height:min(44vmin,340px);
+  transform:translate(calc(50vw - min(22vmin,170px)),calc(50vh - min(22vmin,170px)));
+  transform-origin:top left;
+  overflow:hidden;background:#141414;border-radius:50%;
+  border:1px solid transparent;padding:0;will-change:transform;cursor:default;
+  transition:border-color .45s var(--ease);
+}
+.js #portrait img{width:100%;height:100%;object-fit:cover;filter:saturate(.92) contrast(1.05)}
+.js #portrait.docked{border-color:var(--line2);cursor:pointer}
+.js #portrait.menu-hidden{visibility:hidden}
+.js #portrait.static{position:absolute;left:0;top:0;width:100%;height:100%;transform:none;cursor:default;border-color:var(--line)}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+section{padding:clamp(90px,11vh,150px) var(--pad)}
+#work,#more,#about{border-top:1px solid var(--line)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(40px,6vh,64px)}
+.sec-head .idx{color:var(--accent);margin-bottom:14px}
+.sec-head h2{font-size:clamp(36px,6vw,80px);font-weight:300;letter-spacing:.015em;line-height:1;text-transform:uppercase}
+.sec-head .cap{padding-bottom:8px;color:var(--ink3)}
+#more .sec-head{flex-direction:row-reverse}
+#more .sh-left{text-align:right}
+@media(max-width:640px){.sec-head{padding-right:56px}#more .sec-head{padding-right:0;padding-left:56px}#more .sh-left{text-align:left}}
+
+.row-label{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:14px 2px 18px;margin-bottom:26px}
+.row-label.mt{margin-top:clamp(48px,7vh,72px)}
+
+/* ============================================================
+   WORK GRIDS + CARDS
+   ============================================================ */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.6vw,40px)}
+.card{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.vertical{max-width:340px}
+.card-media{position:relative;display:block;width:100%;padding:0;overflow:hidden;background:#121212;border:1px solid var(--line);border-radius:2px;touch-action:manipulation;transition:border-color .38s var(--ease)}
+.r169{aspect-ratio:16/9}
+.r916{aspect-ratio:9/16}
+.card-media img,.card-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card-media img{filter:saturate(.85) brightness(.88) contrast(1.03);transform:scale(1.001);transition:filter .38s var(--ease),transform .5s var(--ease)}
+.card-media video{opacity:0;transition:opacity .5s var(--ease)}
+.card-media.previewing video{opacity:1}
+.play-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);width:44px;height:44px;border:1px solid rgba(255,255,255,.4);border-radius:50%;display:grid;place-items:center;background:rgba(10,10,10,.4);color:var(--accent);opacity:0;transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.dur{position:absolute;right:10px;bottom:10px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.1em;color:#d5d5d0;background:rgba(10,10,10,.6);padding:3px 7px;opacity:0;transition:opacity .3s var(--ease)}
+.card-title{font-size:15px;font-weight:500;letter-spacing:.01em;transition:transform .3s var(--ease)}
+.card-sub{margin-top:5px}
+.card-desc{margin-top:7px;color:var(--ink3);font-size:13px;font-weight:300;line-height:1.55;max-width:40ch}
+@media (hover:hover) and (pointer:fine){
+  .card:hover .card-media{border-color:var(--line2)}
+  .card:hover .card-media img{transform:scale(1.02);filter:saturate(1) brightness(1) contrast(1)}
+  .card:hover .card-title{transform:translateY(-2px)}
+  .card:hover .play-badge{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .card:hover .dur{opacity:1}
+  .card-media.previewing:hover .dur{opacity:0}
+}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.card.vertical{max-width:290px}}
+@media(max-width:999px){
+  .hero-main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(24px,4vh,40px)}
+  .hero-left{align-items:center;text-align:center}
+  .hero-right{align-items:center;max-width:32ch}
+  .hero-foot{flex-direction:column;align-items:center;gap:18px}
+  .hero-tags{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 22px}
+}
+@media(max-width:719px){.nav-links{display:none}.burger{display:flex}}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.card.vertical{max-width:100%}}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(48px,7vw,110px);align-items:start}
+.about-lead{font-size:clamp(30px,3.6vw,52px);font-weight:300;line-height:1.15}
+.about-body{margin-top:26px;font-size:clamp(16px,1.35vw,19px);font-weight:300;color:#cfcfca;line-height:1.7;max-width:56ch}
+.about-body + .about-body{margin-top:18px}
+.about-avail{margin-top:36px;display:flex;align-items:center;gap:10px}
+.about-avail i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.about-links{margin-top:42px;padding-top:26px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px clamp(20px,3vw,44px);list-style:none}
+.about-links a{display:inline-flex;align-items:center;gap:8px;color:var(--ink2);text-decoration:none;transition:color .25s}
+.about-links a svg{transition:transform .3s var(--ease)}
+.about-links a:hover{color:var(--ink)}
+.about-links a:hover svg{transform:translate(2px,-2px)}
+.about-photo{max-width:400px;justify-self:end;width:100%}
+.about-photo img{width:100%;filter:saturate(.9) contrast(1.04);border:1px solid var(--line)}
+.about-photo figcaption{margin-top:12px;color:var(--ink3)}
+@media(max-width:860px){.about-grid{grid-template-columns:1fr}.about-photo{justify-self:start;max-width:340px}}
+
+/* ============================================================
+   FOOTER + GLOBAL CTA
+   ============================================================ */
+footer{border-top:1px solid var(--line);padding:0 var(--pad)}
+.cta{display:block;text-decoration:none;color:var(--ink);padding:clamp(80px,11vh,136px) 0 clamp(64px,9vh,112px);border-bottom:1px solid var(--line)}
+.cta-in{display:block}
+.cta-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;margin-bottom:clamp(30px,4vh,48px)}
+.cta-line{display:flex;align-items:center;flex-wrap:wrap;column-gap:clamp(18px,3.5vw,56px);row-gap:10px}
+.cta-text{
+  font-size:clamp(38px,9.5vw,132px);font-weight:300;line-height:.98;
+  letter-spacing:.015em;text-transform:uppercase;max-width:100%;
+  color:#c9c9c4;
+  transition:color .45s var(--ease),transform .45s var(--ease);
+}
+.cta-arrow{
+  width:clamp(52px,8vw,116px);height:auto;aspect-ratio:3/1;flex:none;
+  color:#c9c9c4;
+  transition:color .45s var(--ease),transform .45s var(--ease);
+}
+.cta:hover .cta-text,.cta:focus-visible .cta-text{
+  color:var(--ink);
+  transform:translateX(clamp(6px,.8vw,12px));
+}
+.cta:hover .cta-arrow,.cta:focus-visible .cta-arrow{
+  color:var(--accent);
+  transform:translateX(clamp(10px,2vw,26px));
+}
+.foot-in{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;padding-top:44px}
+.foot-brand{font-size:15px;letter-spacing:.24em;font-weight:500}
+.foot-tag{margin-top:9px;color:var(--ink3)}
+.foot-right{display:flex;gap:28px;align-items:center}
+#toTop{display:inline-flex;align-items:center;gap:8px;color:var(--ink2);text-decoration:none;transition:color .25s}
+#toTop:hover{color:var(--ink)}
+.foot-base{max-width:1360px;margin:30px auto 0;padding-bottom:34px;text-align:center;color:var(--ink3)}
+
+/* ============================================================
+   MODAL PLAYER
+   ============================================================ */
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:var(--pad);opacity:0;transition:opacity .3s var(--ease)}
+.modal.open{opacity:1}
+.modal-bg{position:absolute;inset:0;background:rgba(8,8,8,.94)}
+.modal-body{position:relative;width:min(1040px,100%);display:flex;flex-direction:column;transform:translateY(16px) scale(.985);transition:transform .4s var(--ease)}
+.modal.open .modal-body{transform:none}
+.modal-body.v{width:auto;max-width:100%;margin:0 auto}
+.modal-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:14px}
+.modal-top h3{font-size:clamp(18px,2.4vw,26px);font-weight:400}
+.modal-top .modal-meta{margin-top:7px}
+.icon-btn{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;transition:border-color .25s}
+.icon-btn:hover{border-color:var(--line2)}
+.modal-media{position:relative;background:#000;border:1px solid var(--line);overflow:hidden}
+.modal-media.r169{aspect-ratio:16/9}
+.modal-media.r916{aspect-ratio:9/16;height:min(72svh,720px);margin:0 auto}
+.modal-media video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.modal-controls{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:7px 12px;background:rgba(10,10,10,.78);border-top:1px solid var(--line)}
+.m-btn{width:34px;height:34px;display:grid;place-items:center;color:var(--ink);flex:none}
+.m-btn:hover{color:#fff}
+.ic{display:grid;place-items:center}
+.m-time{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--ink2);white-space:nowrap}
+.m-track{flex:1;height:22px;display:flex;align-items:center;cursor:pointer;touch-action:none;min-width:60px}
+.m-track-line{position:relative;width:100%;height:2px;background:rgba(255,255,255,.16)}
+.m-fill{position:absolute;left:0;top:0;height:100%;width:0;background:var(--accent)}
+.modal-desc{padding-top:14px;color:var(--ink2);font-size:14px;font-weight:300;line-height:1.6;max-width:60ch}
+.modal-body.v .modal-desc{max-width:400px}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #intro{display:none}
+  .scroll-line::after{display:none}
+  .sound.attn{animation:none}
+  .sound.on .eq i{animation:none;height:9px}
+  .lt-dot,.lt-idle .lt-ph{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ SYSTEM 1 · OPENING — "THE CUT" (runs once per session) ============ -->
+<div id="intro" aria-hidden="true">
+  <!-- the cover: two flush doors that will part along the cut line -->
+  <div class="cut-door l"><span class="door-edge"></span></div>
+  <div class="cut-door r"><span class="door-edge"></span></div>
+
+  <div class="cut-scene">
+    <div class="cut-timecode" id="cutTC">00:00:00:00</div>
+    <div class="cut-board" id="cutBoard">
+      <div class="cut-lane">
+        <span class="cut-tag">V1</span>
+        <div class="cut-track">
+          <div class="cut-clip">
+            <div class="cut-half l"><i>PHOTO</i></div>
+            <div class="cut-half r"><i>PHOTO</i></div>
+          </div>
+        </div>
+      </div>
+      <div class="cut-lane">
+        <span class="cut-tag">V2</span>
+        <div class="cut-track">
+          <div class="cut-clip">
+            <div class="cut-half l"><i>WORK</i></div>
+            <div class="cut-half r"><i>WORK</i></div>
+          </div>
+        </div>
+      </div>
+      <div class="cut-lane a1">
+        <span class="cut-tag">A1</span>
+        <div class="cut-track">
+          <div class="cut-clip">
+            <div class="cut-half l"><div class="cut-wave"><div class="wd"></div><div class="wl"></div></div></div>
+            <div class="cut-half r"><div class="cut-wave"><div class="wd"></div><div class="wl"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="cut-ph" id="cutPH"></div>
+      <div class="cut-flag" id="cutFlag">CUT</div>
+    </div>
+  </div>
+
+  <!-- the razor: a full-height line at the screen's midline -->
+  <div class="cut-razor" id="cutRazor"></div>
+</div>
+<!-- last-resort watchdog: if anything upstream fails, the page still appears -->
+<script>
+setTimeout(function(){
+  var i = document.getElementById('intro');
+  if (i && !i.dataset.live){ i.remove(); document.documentElement.classList.remove('pre-intro'); }
+}, 4500);
+</script>
+
+<!-- ================= NAV ================= -->
+<header id="nav">
+  <a class="brand" href="#hero">
+    <span id="navSlot" aria-hidden="true"></span>BHARATH
+  </a>
+  <div class="nav-right">
+    <button id="soundBtn" class="sound mono" type="button" aria-pressed="false" aria-label="Play background music">
+      SOUND
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="mono" href="#work">WORK</a>
+      <a class="mono" href="#about">ABOUT</a>
+    </nav>
+    <button class="burger" id="burger" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- mobile menu -->
+<div id="menu" class="menu" aria-hidden="true">
+  <nav aria-label="Menu">
+    <a class="menu-link" href="#work">WORK</a>
+    <a class="menu-link" href="#about">ABOUT</a>
+  </nav>
+  <div class="menu-foot mono">
+    <a href="https://instagram.com/" target="_blank" rel="noopener">INSTAGRAM</a>
+    <a href="https://youtube.com/" target="_blank" rel="noopener">YOUTUBE</a>
+    <a href="mailto:hello@bharath.work">EMAIL</a>
+    <a href="https://linkedin.com/" target="_blank" rel="noopener">LINKEDIN</a>
+  </div>
+</div>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section id="hero" aria-label="Introduction">
+    <div class="hero-main">
+      <div class="hero-left">
+        <h1 class="hero-name">BHARATH<br>BURJI</h1>
+        <p class="hero-role mono">VIDEO EDITOR / VISUAL STORYTELLER</p>
+      </div>
+      <div class="portrait-spacer" aria-hidden="true"></div>
+      <div class="hero-right">
+        <p class="hero-statement">I create videos that make people stop, watch, and remember<span class="dot">.</span></p>
+        <p class="hero-count mono">( 12 PROJECTS — 2023 → 2025 )</p>
+      </div>
+    </div>
+    <div class="hero-foot">
+      <div class="hero-tags mono">
+        <span>VIDEO EDITING</span>
+        <span>STORYTELLING</span>
+        <span>SOCIAL CONTENT</span>
+      </div>
+      <div class="hero-scroll mono">
+        <span>SCROLL</span>
+        <span class="scroll-line" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SELECTED WORK ================= -->
+  <section id="work" aria-label="Selected work">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <div class="sh-left">
+          <p class="mono idx">01</p>
+          <h2>SELECTED WORK<span class="dot">.</span></h2>
+        </div>
+        <p class="mono cap">SIX FILMS — LONG &amp; SHORT FORM</p>
+      </header>
+
+      <div class="row-label reveal">
+        <span class="mono">LONG-FORM — 16:9</span>
+        <span class="mono dim">01 — 03</span>
+      </div>
+      <div class="grid" id="g-sel-wide"></div>
+
+      <div class="row-label mt reveal">
+        <span class="mono">SHORT-FORM — 9:16</span>
+        <span class="mono dim">04 — 06</span>
+      </div>
+      <div class="grid" id="g-sel-tall"></div>
+    </div>
+  </section>
+
+  <!-- ================= MORE WORK ================= -->
+  <section id="more" aria-label="More work">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <div class="sh-left">
+          <p class="mono idx">02</p>
+          <h2>MORE WORK<span class="dot">.</span></h2>
+        </div>
+        <p class="mono cap">REELS &amp; CLIENT WORK</p>
+      </header>
+
+      <div class="row-label reveal">
+        <span class="mono">VERTICAL — 9:16</span>
+        <span class="mono dim">07 — 09</span>
+      </div>
+      <div class="grid" id="g-more-tall"></div>
+
+      <div class="row-label mt reveal">
+        <span class="mono">HORIZONTAL — 16:9</span>
+        <span class="mono dim">10 — 12</span>
+      </div>
+      <div class="grid" id="g-more-wide"></div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about" aria-label="About">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <div class="sh-left">
+          <p class="mono idx">03</p>
+          <h2>ABOUT<span class="dot">.</span></h2>
+        </div>
+        <p class="mono cap">BASED IN INDIA — WORKING ANYWHERE</p>
+      </header>
+
+      <div class="about-grid">
+        <div>
+          <p class="about-lead reveal">I&rsquo;m Bharath<span class="dot">.</span></p>
+          <p class="about-body reveal">A video editor and visual storyteller interested in turning ordinary footage into stories people want to watch.</p>
+          <p class="about-body reveal">Most of my work lives on YouTube and Instagram — long-form films, brand videos and short-form edits. I care about rhythm, restraint, and the fraction of a second before a cut. If a frame doesn&rsquo;t earn its place, it doesn&rsquo;t stay.</p>
+          <p class="about-avail mono reveal"><i aria-hidden="true"></i>AVAILABLE FOR FREELANCE — 2026</p>
+          <ul class="about-links reveal">
+            <li><a class="mono" href="https://instagram.com/" target="_blank" rel="noopener">INSTAGRAM
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" href="https://youtube.com/" target="_blank" rel="noopener">YOUTUBE
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" href="mailto:hello@bharath.work">EMAIL
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" href="https://linkedin.com/" target="_blank" rel="noopener">LINKEDIN
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+          </ul>
+        </div>
+        <figure class="about-photo reveal">
+          <img src="https://picsum.photos/seed/bharath-edit/800/1000.jpg" alt="Bharath working at his editing desk" loading="lazy" decoding="async">
+          <figcaption class="mono">BHARATH — BETWEEN TWO CUTS</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER (global — CTA + info) ================= -->
+  <footer>
+    <a class="cta reveal" href="#about" aria-label="Get in touch">
+      <span class="wrap cta-in">
+        <span class="cta-top mono">
+          <span>04 — CONTACT</span>
+          <span class="dim">HELLO@BHARATH.WORK</span>
+        </span>
+        <span class="cta-line">
+          <span class="cta-text">GET IN TOUCH</span>
+          <svg class="cta-arrow" viewBox="0 0 72 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 12h62M52 3l11 9-11 9"/>
+          </svg>
+        </span>
+      </span>
+    </a>
+
+    <div class="foot-in">
+      <div>
+        <p class="foot-brand">BHARATH</p>
+        <p class="foot-tag mono">VIDEO EDITOR / VISUAL STORYTELLER</p>
+      </div>
+      <div class="foot-right mono">
+        <span id="clock" class="dim">IST —:—</span>
+        <a id="toTop" href="#hero">BACK TO TOP
+          <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M5 8.5V1.5M1.8 4.7 5 1.5l3.2 3.2"/></svg></a>
+      </div>
+    </div>
+    <p class="foot-base mono">© 2026 BHARATH — ALL CUTS FINAL</p>
+  </footer>
+</main>
+
+<!-- portrait: fixed circular shared element (hero center → nav, beside the wordmark) -->
+<button id="portrait" type="button" aria-label="Back to top">
+  <img src="https://picsum.photos/seed/bharath-portrait/800/800.jpg" alt="Portrait of Bharath">
+</button>
+
+<!-- ================= MODAL PLAYER ================= -->
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+  <div class="modal-bg" data-close></div>
+  <div class="modal-body" id="mBody">
+    <div class="modal-top">
+      <div>
+        <h3 id="mTitle"></h3>
+        <p class="mono modal-meta" id="mMeta"></p>
+      </div>
+      <button class="icon-btn" id="mClose" type="button" aria-label="Close player" data-close>
+        <svg viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13"/></svg>
+      </button>
+    </div>
+    <figure class="modal-media r169" id="mFig">
+      <video id="mVideo" playsinline preload="metadata"></video>
+      <div class="modal-controls">
+        <button class="m-btn" id="mPlay" type="button" aria-label="Play">
+          <span class="ic" id="icPlay"><svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 1l10 6-10 6z" fill="currentColor"/></svg></span>
+          <span class="ic" id="icPause" hidden><svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1.5 1h3v12h-3zM7.5 1h3v12h-3z" fill="currentColor"/></svg></span>
+        </button>
+        <span class="m-time" id="mTime">00:00 / 00:00</span>
+        <div class="m-track" id="mTrack" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+          <div class="m-track-line"><div class="m-fill" id="mFill"></div></div>
+        </div>
+        <button class="m-btn" id="mMute" type="button" aria-label="Unmute">
+          <span class="ic" id="icVol" hidden><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11.5 5.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" stroke-width="1.2" fill="none"/></svg></span>
+          <span class="ic" id="icMut"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11 6l4 4M15 6l-4 4" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        </button>
+      </div>
+    </figure>
+    <p class="modal-desc" id="mDesc"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+<script>
+/* ============================================================
+   PROJECT DATA — replace thumbs / videoUrl with real work.
+   ============================================================ */
+const GTB = 'https://storage.googleapis.com/gtv-videos-bucket/sample/';
+const IMG = 'https://picsum.photos/seed/';
+
+const PROJECTS = [
+  { title:'The Quiet Hours', category:'Documentary', platform:'YouTube', year:'2024', duration:'12:48', aspect:'16/9',
+    description:'A city examined between 3 and 5 AM — slow pans, empty streets, one narrator.',
+    thumb: IMG+'quiet-hours/1280/720.jpg', videoUrl: GTB+'BigBuckBunny.mp4' },
+  { title:'Vellum', category:'Brand Film', platform:'Client', year:'2024', duration:'01:30', aspect:'16/9',
+    description:'Launch film for a small stationery label. Paper, hands, light.',
+    thumb: IMG+'vellum-paper/1280/720.jpg', videoUrl: GTB+'ForBiggerBlazes.mp4' },
+  { title:'Field Notes, Kerala', category:'Travel Film', platform:'YouTube', year:'2023', duration:'09:36', aspect:'16/9',
+    description:'Ten days of rain, backwaters and slow mornings, cut to a monsoon rhythm.',
+    thumb: IMG+'kerala-rain/1280/720.jpg', videoUrl: GTB+'ElephantsDream.mp4' },
+  { title:'Streets at 5AM', category:'Reel', platform:'Instagram', year:'2025', duration:'00:38', aspect:'9/16',
+    description:'One street, one hour, thirty-eight seconds.',
+    thumb: IMG+'streets-5am/720/1280.jpg', videoUrl: GTB+'ForBiggerEscapes.mp4' },
+  { title:'Two Minutes of Calm', category:'Short', platform:'Instagram', year:'2024', duration:'01:54', aspect:'9/16',
+    description:'A breathing exercise edited to actually slow you down.',
+    thumb: IMG+'calm-water/720/1280.jpg', videoUrl: GTB+'ForBiggerFun.mp4' },
+  { title:'Rush Hour, Reversed', category:'Reel', platform:'Instagram', year:'2024', duration:'00:29', aspect:'9/16',
+    description:'Traffic played backwards until it looks like choreography.',
+    thumb: IMG+'rush-hour/720/1280.jpg', videoUrl: GTB+'ForBiggerJoyrides.mp4' },
+  { title:'Sound On', category:'Reel', platform:'YouTube Shorts', year:'2025', duration:'00:45', aspect:'9/16',
+    description:'An edit built entirely around one sound — every cut lands on the transient.',
+    thumb: IMG+'sound-on/720/1280.jpg', videoUrl: GTB+'ForBiggerMeltdowns.mp4' },
+  { title:'Frame by Frame', category:'Series', platform:'Instagram', year:'2024', duration:'00:52', aspect:'9/16',
+    description:'Twelve films about how a single frame can carry a whole story.',
+    thumb: IMG+'frame-frame/720/1280.jpg', videoUrl: GTB+'Sintel.mp4' },
+  { title:'Monsoon Walk', category:'Short', platform:'YouTube Shorts', year:'2024', duration:'00:31', aspect:'9/16',
+    description:'Point-of-view walk through the first rain of the season.',
+    thumb: IMG+'monsoon-walk/720/1280.jpg', videoUrl: GTB+'TearsOfSteel.mp4' },
+  { title:'The Coffee Ritual', category:'Brand Film', platform:'Client', year:'2023', duration:'02:12', aspect:'16/9',
+    description:'A morning routine, re-cut as a ritual. Sixty takes, ninety shots, one cup.',
+    thumb: IMG+'coffee-ritual/1280/720.jpg', videoUrl: GTB+'SubaruOutbackOnStreetAndDirt.mp4' },
+  { title:'Wedding, Unscripted', category:'Wedding Film', platform:'Client', year:'2023', duration:'06:24', aspect:'16/9',
+    description:'No poses, no stage. Just what actually happened, in the order it felt.',
+    thumb: IMG+'wedding-unscripted/1280/720.jpg', videoUrl: GTB+'VolkswagenGTIReview.mp4' },
+  { title:'Afterhours', category:'Music Video', platform:'Client', year:'2025', duration:'03:18', aspect:'16/9',
+    description:'A night drive cut to a slow track — every headlight gets its moment.',
+    thumb: IMG+'afterhours-drive/1280/720.jpg', videoUrl: GTB+'WeAreGoingOnBullrun.mp4' },
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const PLAY_SVG = '<svg viewBox="0 0 10 12" width="9" height="11" aria-hidden="true"><path d="M0 0l10 6-10 6z" fill="currentColor"/></svg>';
+
+function cardHTML(p, i, showDesc){
+  const vertical = p.aspect === '9/16';
+  return `
+  <article class="card reveal${vertical ? ' vertical' : ''}">
+    <button class="card-media ${vertical ? 'r916' : 'r169'}" type="button" data-i="${i}" aria-label="Play ${p.title} — ${p.duration}" aria-describedby="desc-${i}">
+      <img src="${p.thumb}" alt="" loading="lazy" decoding="async">
+      <video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+      <span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>
+      <span class="dur" aria-hidden="true">${p.duration}</span>
+    </button>
+    <div class="card-meta">
+      <h3 class="card-title">${p.title}</h3>
+      <p class="card-sub mono">${p.category} · ${p.platform} — ${p.year}</p>
+      ${showDesc && p.description ? `<p class="card-desc" id="desc-${i}">${p.description}</p>` : `<span id="desc-${i}" hidden></span>`}
+    </div>
+  </article>`;
+}
+
+function render(){
+  document.getElementById('g-sel-wide').innerHTML  = PROJECTS.slice(0,3).map((p,i)=>cardHTML(p,i,false)).join('');
+  document.getElementById('g-sel-tall').innerHTML  = PROJECTS.slice(3,6).map((p,i)=>cardHTML(p,i+3,false)).join('');
+  document.getElementById('g-more-tall').innerHTML = PROJECTS.slice(6,9).map((p,i)=>cardHTML(p,i+6,true)).join('');
+  document.getElementById('g-more-wide').innerHTML = PROJECTS.slice(9,12).map((p,i)=>cardHTML(p,i+9,true)).join('');
+}
+render();
+
+/* ============================================================
+   SETUP
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const REDUCED  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const hasGsap  = !!(window.gsap && window.ScrollTrigger);
+
+const nav      = $('#nav');
+const slot     = $('#navSlot');
+const portrait = $('#portrait');
+const spacer   = $('.portrait-spacer');
+const intro    = $('#intro');
+
+/* intro runs ONCE per browser session — never on navigation,
+   never on project clicks, never on reload within the session */
+const introSeen = (() => { try { return sessionStorage.getItem('bh-intro') === '1'; } catch(e){ return false; } })();
+const INTRO_RUN = !!intro && !introSeen && !REDUCED && hasGsap;
+
+if (!INTRO_RUN){
+  if (intro) intro.remove();
+  document.documentElement.classList.remove('pre-intro');
+  /* reduced motion (or a session replay) → final page with a short fade */
+  if (REDUCED && hasGsap && !introSeen){
+    gsap.from(['#nav','main','#portrait'], { opacity:0, duration:.7, ease:'power2.out', clearProps:'opacity' });
+  }
+}
+let introDone = !INTRO_RUN, pendingRefresh = false;
+let masterTl = null, introSafetyT = 0;
+
+try { history.scrollRestoration = 'manual'; scrollTo(0,0); } catch(e){}
+
+/* ---- smooth scroll (Lenis) ---- */
+let lenis = null;
+if (hasGsap && window.Lenis && !REDUCED){
+  lenis = new Lenis({ duration: 1.1, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  if (INTRO_RUN) lenis.stop();                  // scroll locked while the intro plays
+}
+
+/* ---- anchor navigation (never touches the audio, never replays the intro) ---- */
+function goTo(target){
+  if (target === '#hero' || target === 0){
+    lenis ? lenis.scrollTo(0, {duration: 1.3}) : scrollTo({top:0, behavior: REDUCED ? 'auto' : 'smooth'});
+    return;
+  }
+  const el = document.querySelector(target);
+  if (!el) return;
+  lenis ? lenis.scrollTo(el, {duration: 1.2}) : el.scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth'});
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href.length > 1 && document.querySelector(href)){ e.preventDefault(); closeMenu(); goTo(href); }
+  });
+});
+portrait.addEventListener('click', () => goTo('#hero'));
+
+/* ---- mobile menu ---- */
+const burger = $('#burger'), menu = $('#menu');
+function openMenu(){
+  menu.classList.add('open'); burger.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false');
+  portrait.classList.add('menu-hidden');
+  document.documentElement.classList.add('locked'); lenis && lenis.stop();
+}
+function closeMenu(){
+  if (!menu.classList.contains('open')) return;
+  menu.classList.remove('open'); burger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true');
+  portrait.classList.remove('menu-hidden');
+  document.documentElement.classList.remove('locked'); lenis && lenis.start();
+}
+burger.addEventListener('click', () => menu.classList.contains('open') ? closeMenu() : openMenu());
+
+/* ============================================================
+   PORTRAIT GEOMETRY
+   circle centered in the hero  →  docked beside the wordmark
+   ============================================================ */
+const P = { hero:{x:0,y:0,s:1}, dock:{x:0,y:0,s:1} };
+let dockSize = 30;
+
+const STATIC_PORTRAIT = REDUCED || !hasGsap;
+if (STATIC_PORTRAIT){
+  portrait.classList.add('static');
+  spacer.appendChild(portrait);
+  addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 240), {passive:true});
+}
+
+function layout(){
+  const vw = innerWidth, vh = innerHeight;
+  dockSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock')) || 30;
+  let D = vw < 1000
+    ? Math.min(240, vw * 0.56, vh * 0.30)
+    : Math.min(360, vh * 0.46,  vw * 0.26);
+  D = Math.round(D);
+  spacer.style.width  = D + 'px';
+  spacer.style.height = D + 'px';
+  if (STATIC_PORTRAIT) return;
+  portrait.style.width  = D + 'px';
+  portrait.style.height = D + 'px';
+  const r  = spacer.getBoundingClientRect();
+  const sy = window.scrollY || window.pageYOffset || 0;
+  P.hero = { x: r.left, y: r.top + sy, s: 1 };
+  const padX = parseFloat(getComputedStyle(nav).paddingLeft);
+  P.dock = { x: padX, y: (nav.offsetHeight - dockSize) / 2, s: dockSize / D };
+}
+layout();
+
+/* ============================================================
+   SCROLL ANIMATIONS (GSAP + ScrollTrigger)
+   ============================================================ */
+if (hasGsap && !REDUCED){
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  gsap.set(portrait, { x: P.hero.x, y: P.hero.y, scale: 1 });
+
+  /* signature move — the photo travels straight up/left into the
+     nav at exactly page-scroll speed: the trigger range equals the
+     photo's own travel distance, scrub is unsmoothed and the tween
+     is linear, so y and x move monotonically toward the dock and
+     scrolling back up reverses it one-for-one. */
+  const travel = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#hero',
+      start: 'top top',
+      end: () => '+=' + Math.max(260, Math.round(P.hero.y - P.dock.y)),
+      scrub: true,
+      invalidateOnRefresh: true,
+      onUpdate(self){
+        portrait.classList.toggle('docked', self.progress > 0.92);
+        nav.classList.toggle('solid',   self.progress > 0.5);
+      }
+    }
+  });
+  travel.fromTo(portrait,
+      { x: () => P.hero.x, y: () => P.hero.y, scale: () => P.hero.s },
+      { x: () => P.dock.x, y: () => P.dock.y, scale: () => P.dock.s, ease: 'none', duration: 1 }, 0)
+    .fromTo(slot,
+      { width: 0, marginRight: 0 },
+      { width: () => dockSize, marginRight: () => innerWidth < 720 ? 8 : 12, ease: 'none', duration: 1 }, 0)
+    .to('.hero-main', { opacity: 0, y: -70, ease: 'power1.in', duration: 0.5 }, 0.05)
+    .to('.hero-foot', { opacity: 0, ease: 'none', duration: 0.5 }, 0.1);
+
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.from(el, { y: 26, opacity: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+  });
+
+  ScrollTrigger.addEventListener('refreshInit', layout);
+  layout();
+  document.fonts && document.fonts.ready.then(() => {
+    if (introDone) ScrollTrigger.refresh(); else pendingRefresh = true;
+  });
+}
+
+let resizeT;
+addEventListener('resize', () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => {
+    if (!introDone){ finishIntro(); return; }   // intro geometry is measured — bail out cleanly
+    layout();
+    if (hasGsap && !REDUCED) ScrollTrigger.refresh();
+  }, 180);
+});
+
+/* ============================================================
+   HOVER PREVIEWS — poster-first, load only after dwell,
+   reset to frame zero on leave. Skipped while offline.
+   ============================================================ */
+function startPreview(btn){
+  if (!navigator.onLine) return;
+  const v = btn.querySelector('video');
+  if (v && v.dataset.dead) return;
+  const p = PROJECTS[+btn.dataset.i];
+  if (!v || !p || !p.videoUrl) return;
+  if (!v.src) v.src = p.videoUrl;
+  v.play().catch(()=>{});
+  btn.classList.add('previewing');
+}
+function stopPreview(btn){
+  const v = btn.querySelector('video');
+  if (v){
+    if (!v.paused) v.pause();
+    if (v.readyState >= 1){ try { v.currentTime = 0; } catch(e){} }
+  }
+  btn.classList.remove('previewing');
+}
+function stopAllPreviews(){ document.querySelectorAll('.card-media.previewing').forEach(stopPreview); }
+
+document.querySelectorAll('.card-media').forEach(btn => {
+  let t = null;
+  const start = () => {
+    if (!canHover) return;
+    clearTimeout(t);
+    const v = btn.querySelector('video');
+    const ready = v && v.src && v.readyState >= 2;
+    t = setTimeout(() => startPreview(btn), ready ? 60 : 360);
+  };
+  const stop  = () => { clearTimeout(t); stopPreview(btn); };
+  btn.addEventListener('mouseenter', start);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('focus', start);
+  btn.addEventListener('blur', stop);
+  const v = btn.querySelector('video');
+  if (v) v.addEventListener('error', () => { v.dataset.dead = '1'; }, { once:true });
+});
+addEventListener('scroll', () => stopAllPreviews(), { passive: true });
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopAllPreviews(); });
+
+/* ============================================================
+   AMBIENT BEAT — same music, same mix, reliable lifecycle.
+   ============================================================ */
+const Sound = (() => {
+  const BPM   = 84;
+  const STEP  = 60 / BPM / 4;
+  const SWING = STEP * 0.26;
+  const LEVEL = 0.45;
+
+  try { localStorage.removeItem('bharath-sound'); } catch(e){}
+
+  let intent  = true;
+  let running = false;
+  let ducked  = false;
+
+  const KICK  = [0, 10, 16, 26];
+  const SNARE = [4, 12, 20, 28];
+  const HATS  = [2, 6, 10, 14, 18, 22, 26, 30];
+  const SKIP  = [15, 23];
+  const OPEN  = [30];
+
+  const CHORDS = [
+    [174.61, 220.00, 261.63, 329.63],
+    [164.81, 196.00, 246.94, 293.66],
+    [146.83, 174.61, 220.00, 261.63],
+    [130.81, 164.81, 196.00, 246.94],
+  ];
+  const ROOTS = [87.31, 82.41, 73.42, 65.41];
+
+  const PLUCKS = [
+    [10, 880.00, 0.40],
+    [22, 783.99, 0.34],
+    [44, 880.00, 0.30],
+    [56, 659.25, 0.36],
+    [62, 587.33, 0.24],
+  ];
+
+  let ctx = null, bus = null, chordLP = null, delayIn = null, noiseBuf = null;
+  let timer = null, nextTime = 0, step = 0;
+  let onStateChange = null;
+
+  function init(){
+    if (ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC();
+    bus = ctx.createGain();
+    bus.gain.value = 0.0001;
+    const tone = ctx.createBiquadFilter();
+    tone.type = 'lowpass'; tone.frequency.value = 8800;
+    const shelf = ctx.createBiquadFilter();
+    shelf.type = 'highshelf'; shelf.frequency.value = 5200; shelf.gain.value = -3.5;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -30; comp.knee.value = 30;
+    comp.ratio.value = 2.5; comp.attack.value = .012; comp.release.value = .3;
+    bus.connect(tone); tone.connect(shelf); shelf.connect(comp); comp.connect(ctx.destination);
+    chordLP = ctx.createBiquadFilter();
+    chordLP.type = 'lowpass'; chordLP.frequency.value = 950;
+    chordLP.connect(bus);
+    delayIn = ctx.createGain();
+    const dly  = ctx.createDelay(1.5);
+    dly.delayTime.value = (60 / BPM) * 0.75;
+    const damp = ctx.createBiquadFilter();
+    damp.type = 'lowpass'; damp.frequency.value = 2400;
+    const fb = ctx.createGain(); fb.gain.value = 0.34;
+    const wet = ctx.createGain(); wet.gain.value = 0.5;
+    delayIn.connect(dly);
+    dly.connect(damp); damp.connect(fb); fb.connect(dly);
+    dly.connect(wet); wet.connect(bus);
+  }
+
+  function noise(){
+    if (noiseBuf) return noiseBuf;
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return noiseBuf;
+  }
+
+  function playSilentUnlock(){
+    try{
+      const b = ctx.createBuffer(1, 1, ctx.sampleRate);
+      const s = ctx.createBufferSource();
+      s.buffer = b; s.connect(ctx.destination); s.start(0);
+    }catch(e){}
+  }
+
+  /* the razor's soft click — only when audio is already running.
+     Never initializes audio, never forces a resume. */
+  function razor(){
+    if (!ctx || !running || ctx.state !== 'running') return;
+    try{
+      const t = ctx.currentTime;
+      const s = ctx.createBufferSource(); s.buffer = noise();
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass'; hp.frequency.value = 3000;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.09, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+      s.connect(hp); hp.connect(g); g.connect(ctx.destination);
+      s.start(t, Math.random() * 0.1); s.stop(t + 0.06);
+    }catch(e){}
+  }
+
+  function kick(t){
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(140, t);
+    o.frequency.exponentialRampToValueAtTime(58, t + 0.09);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.42, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.20);
+    o.connect(g); g.connect(bus);
+    o.start(t); o.stop(t + 0.24);
+  }
+
+  function snare(t, vel = 1){
+    const s = ctx.createBufferSource(); s.buffer = noise();
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = 1650; bp.Q.value = 0.7;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.16 * vel, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    s.connect(bp); bp.connect(g); g.connect(bus);
+    s.start(t, Math.random() * 0.12); s.stop(t + 0.13);
+    const o = ctx.createOscillator(), og = ctx.createGain();
+    o.type = 'triangle'; o.frequency.value = 180;
+    og.gain.setValueAtTime(0.055 * vel, t);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    o.connect(og); og.connect(bus);
+    o.start(t); o.stop(t + 0.08);
+  }
+
+  function hat(t, vel, open){
+    const s = ctx.createBufferSource(); s.buffer = noise();
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 7600;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 11500;
+    const g = ctx.createGain();
+    const d = open ? 0.10 : 0.028;
+    g.gain.setValueAtTime(0.042 * vel, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    s.connect(hp); hp.connect(lp); lp.connect(g); g.connect(bus);
+    s.start(t, Math.random() * 0.12); s.stop(t + d + 0.02);
+  }
+
+  function chord(t, freqs, vel){
+    freqs.forEach((f, i) => {
+      [-5, 5].forEach(det => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'triangle'; o.frequency.value = f; o.detune.value = det;
+        const v = 0.022 * vel * (i === 0 ? 1.15 : 1);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(v, t + 0.09);
+        g.gain.setTargetAtTime(v * 0.62, t + 0.09, 0.6);
+        g.gain.setTargetAtTime(0.0001, t + 1.5, 0.2);
+        o.connect(g); g.connect(chordLP);
+        o.start(t); o.stop(t + 2.8);
+      });
+    });
+  }
+
+  function bass(t, f, vel = 1){
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.10 * vel, t + 0.05);
+    g.gain.setTargetAtTime(0.0001, t + 0.45, 0.25);
+    o.connect(g); g.connect(bus);
+    o.start(t); o.stop(t + 1.3);
+  }
+
+  function pluck(t, f, vel){
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 2300;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.05 * vel, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    [-6, 6].forEach(det => {
+      const o = ctx.createOscillator();
+      o.type = 'triangle'; o.frequency.value = f; o.detune.value = det;
+      o.connect(g); o.start(t); o.stop(t + 0.6);
+    });
+    g.connect(lp); lp.connect(bus);
+    const send = ctx.createGain(); send.gain.value = 0.7;
+    lp.connect(send); send.connect(delayIn);
+  }
+
+  function scheduleStep(s, t){
+    const pos = s % 32;
+    const bar = Math.floor(s / 16) % 4;
+    const sw  = (pos % 2 === 1 || pos % 4 === 2) ? SWING : 0;
+    const tt  = t + sw;
+    const hum = 0.94 + Math.random() * 0.12;
+    if (KICK.includes(pos))  kick(t);
+    if (SNARE.includes(pos)) snare(t);
+    if (HATS.includes(pos))  hat(tt, ((pos === 6 || pos === 22) ? 0.8 : 0.5) * hum, false);
+    if (SKIP.includes(pos))  hat(tt, 0.26 * hum, false);
+    if (OPEN.includes(pos))  hat(tt, 0.35, true);
+    if (pos === 0){ chord(t, CHORDS[bar], 1); bass(t, ROOTS[bar]); }
+    if (pos === 10 && (bar === 1 || bar === 3)) chord(tt, CHORDS[bar], 0.3);
+    if (pos === 10 && bar === 3) bass(tt, 110, 0.55);
+    for (const [ps, f, v] of PLUCKS){
+      if (s === ps){ const psw = (ps % 2 === 1 || ps % 4 === 2) ? SWING : 0; pluck(t + psw, f, v); }
+    }
+  }
+
+  function scheduler(){
+    if (!ctx || !running || ctx.state !== 'running') return;
+    while (nextTime < ctx.currentTime - 0.06){
+      step = (step + 1) % 64;
+      nextTime += STEP;
+    }
+    while (nextTime < ctx.currentTime + 0.18){
+      scheduleStep(step, nextTime);
+      step = (step + 1) % 64;
+      nextTime += STEP;
+    }
+  }
+
+  function setLevel(tau){
+    const now = ctx.currentTime;
+    bus.gain.cancelScheduledValues(now);
+    bus.gain.setTargetAtTime(running && !ducked ? LEVEL : 0.0001, now, tau);
+  }
+
+  function startEngine(){
+    if (running || !ctx || ctx.state !== 'running') return;
+    running = true;
+    step = 0;
+    nextTime = ctx.currentTime + 0.12;
+    clearInterval(timer);
+    timer = setInterval(scheduler, 40);
+    scheduler();
+    setLevel(0.8);
+    onStateChange && onStateChange(true);
+  }
+
+  function haltEngine(){
+    if (!running) return;
+    running = false;
+    clearInterval(timer); timer = null;
+    setLevel(0.5);
+    setTimeout(() => {
+      if (!running && ctx && ctx.state === 'running') ctx.suspend();
+    }, 1200);
+    onStateChange && onStateChange(false);
+  }
+
+  function attemptStart(){
+    if (!intent || running) return;
+    init();
+    if (ctx.state === 'running'){ playSilentUnlock(); startEngine(); return; }
+    const p = ctx.resume();
+    if (p && p.then){
+      p.then(() => {
+        if (intent && !running && ctx.state === 'running'){
+          playSilentUnlock();
+          startEngine();
+        }
+      }).catch(() => {});
+    }
+  }
+
+  return {
+    get intent(){ return intent; },
+    get playing(){ return running; },
+    set onStateChange(fn){ onStateChange = fn; },
+    unlock(){ attemptStart(); },
+    razor(){ razor(); },
+    enable(){ intent = true;  attemptStart(); },
+    disable(){ intent = false; haltEngine(); },
+    duck(d){ if (ctx){ ducked = d; if (running) setLevel(0.6); } },
+    suspend(){ if (ctx && ctx.state === 'running' && running) ctx.suspend(); },
+    resume(){ if (ctx && running && ctx.state === 'suspended') ctx.resume().catch(()=>{}); },
+  };
+})();
+
+/* ---- sound toggle ---- */
+const soundBtn = $('#soundBtn');
+let soundTouched = false;
+
+function paintSoundBtn(on){
+  soundBtn.classList.toggle('on', on);
+  soundBtn.setAttribute('aria-pressed', String(on));
+  soundBtn.setAttribute('aria-label', on ? 'Mute background music' : 'Play background music');
+}
+Sound.onStateChange = paintSoundBtn;
+paintSoundBtn(Sound.playing);
+
+soundBtn.addEventListener('click', () => {
+  soundTouched = true;
+  soundBtn.classList.remove('attn');
+  if (Sound.playing) Sound.disable();
+  else                Sound.enable();
+});
+
+Sound.unlock();
+
+function firstGesture(e){
+  if (!Sound.intent || Sound.playing) return;
+  if (e.target && e.target.closest && e.target.closest('#soundBtn')) return;
+  Sound.unlock();
+}
+['pointerdown','touchend','keydown','click'].forEach(ev =>
+  document.addEventListener(ev, firstGesture, {
+    capture: true,
+    passive: (ev === 'pointerdown' || ev === 'touchend')
+  })
+);
+
+setInterval(() => { if (Sound.intent && !Sound.playing) Sound.unlock(); }, 2500);
+setTimeout(() => { if (!soundTouched && Sound.intent && !Sound.playing) soundBtn.classList.add('attn'); }, 3800);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ Sound.suspend(); }
+  else {
+    Sound.resume();
+    if (Sound.intent && !Sound.playing) Sound.unlock();
+  }
+});
+
+/* ============================================================
+   STARFIELD
+   ============================================================ */
+const Stars = (() => {
+  const cv = document.getElementById('stars');
+  if (!cv || !cv.getContext) return {};
+  const g = cv.getContext('2d');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, stars = [], raf = 0, last = 0;
+
+  const COUNT = () => innerWidth < 700 ? 34 : innerWidth < 1200 ? 48 : 64;
+
+  function make(){
+    const depth = 0.25 + Math.random() * 0.75;
+    return {
+      x: Math.random() * W, y: Math.random() * H, depth,
+      r: 0.15 + (0.35 + Math.random() * 1.05) * depth,
+      base: 0.16 + Math.random() * 0.40,
+      twA: 0.06 + Math.random() * 0.18,
+      twS: 0.35 + Math.random() * 0.70,
+      twP: Math.random() * Math.PI * 2,
+      vy: (1.5 + Math.random() * 4) * depth,
+      wobA: 3 + Math.random() * 9,
+      wobS: 0.05 + Math.random() * 0.12,
+      wobP: Math.random() * Math.PI * 2,
+      warm: Math.random() < 0.45,
+      canSparkle: Math.random() < 0.08,
+      spark: 0,
+      sparkAt: 40 + Math.random() * 80,
+    };
+  }
+
+  function resize(){
+    const w = innerWidth, h = innerHeight;
+    const rx = W ? w / W : 1, ry = H ? h / H : 1;
+    W = w; H = h;
+    const DPR = Math.min(devicePixelRatio || 1, 2);
+    cv.width  = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    cv.style.width  = W + 'px';
+    cv.style.height = H + 'px';
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (stars.length){ stars.forEach(s => { s.x *= rx; s.y *= ry; }); }
+    else { const n = COUNT(); for (let i = 0; i < n; i++) stars.push(make()); }
+  }
+
+  function draw(now, dt, live){
+    const t = now / 1000;
+    g.clearRect(0, 0, W, H);
+    const sy = window.scrollY || 0;
+    const cx = W / 2, cy = H * 0.44;
+    const span = H + 48;
+    for (const s of stars){
+      if (live){
+        s.y -= s.vy * dt;
+        if (s.y < -24){ s.y = H + 24; s.x = Math.random() * W; }
+        if (s.canSparkle){
+          if (s.spark > 0){ s.spark = Math.max(0, s.spark - dt / 1.1); }
+          else { s.sparkAt -= dt; if (s.sparkAt <= 0){ s.spark = 1; s.sparkAt = 40 + Math.random() * 80; } }
+        }
+      }
+      let py = s.y - sy * 0.03 * s.depth;
+      py = ((py % span) + span) % span - 24;
+      const px = s.x + (live ? Math.sin(t * s.wobS + s.wobP) * s.wobA : 0);
+      const dx = (px - cx) / (W * 0.5), dy = (py - cy) / (H * 0.5);
+      const dist = Math.min(1, Math.hypot(dx, dy));
+      const fade = 0.18 + 0.82 * dist * dist;
+      const edge = Math.min(1, (py + 24) / 48, (H + 24 - py) / 48);
+      let a = s.base + (live ? s.twA * Math.sin(t * s.twS + s.twP) : 0);
+      const sp = s.spark > 0 ? Math.sin(Math.PI * (1 - s.spark)) : 0;
+      a = Math.min(0.85, (a + sp * 0.55) * fade * Math.max(edge, 0));
+      if (a <= 0.01) continue;
+      const r = s.r * (1 + sp * 0.6);
+      const col = s.warm ? '232,222,205' : '210,220,232';
+      if (r >= 0.9){
+        g.beginPath();
+        g.arc(px, py, r * 3, 0, Math.PI * 2);
+        g.fillStyle = `rgba(${col},${(a * 0.16).toFixed(3)})`;
+        g.fill();
+      }
+      g.beginPath();
+      g.arc(px, py, Math.max(r, 0.5), 0, Math.PI * 2);
+      g.fillStyle = `rgba(${col},${a.toFixed(3)})`;
+      g.fill();
+    }
+  }
+
+  function frame(now){
+    const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
+    last = now;
+    draw(now, dt, true);
+    raf = requestAnimationFrame(frame);
+  }
+
+  function start(){
+    if (reduced){ draw(0, 0, false); return; }
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+
+  resize();
+  start();
+
+  let rt;
+  addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { resize(); if (reduced) draw(0, 0, false); }, 200);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden){ cancelAnimationFrame(raf); raf = 0; }
+    else if (!reduced && !raf){ last = performance.now(); raf = requestAnimationFrame(frame); }
+  });
+
+  return {};
+})();
+
+/* ============================================================
+   MODAL PLAYER + SYSTEM 2 (loading / buffering / network)
+   ============================================================ */
+const modal  = $('#modal'), mBody = $('#mBody'), mFig = $('#mFig');
+const mVideo = $('#mVideo'), mTitle = $('#mTitle'), mMeta = $('#mMeta'), mDesc = $('#mDesc');
+const mPlay  = $('#mPlay'), mMute = $('#mMute'), mClose = $('#mClose');
+const mTime  = $('#mTime'), mTrack = $('#mTrack'), mFill = $('#mFill');
+const icPlay = $('#icPlay'), icPause = $('#icPause'), icVol = $('#icVol'), icMut = $('#icMut');
+let lastFocus = null;
+
+const fmt = s => {
+  if (!isFinite(s)) s = 0;
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(Math.floor(s%60)).padStart(2,'0');
+};
+function syncPlay(){ icPlay.hidden = !mVideo.paused; icPause.hidden = mVideo.paused; mPlay.setAttribute('aria-label', mVideo.paused ? 'Play' : 'Pause'); }
+function syncMute(){ icVol.hidden = !mVideo.muted; icMut.hidden = !mVideo.muted; mMute.setAttribute('aria-label', mVideo.muted ? 'Unmute' : 'Mute'); }
+function togglePlay(){ mVideo.paused ? mVideo.play().catch(()=>{}) : mVideo.pause(); }
+
+document.addEventListener('click', e => {
+  if (e.target.closest('.card-offline')) return;        // retry owns this click
+  const btn = e.target.closest('.card-media');
+  if (btn) openModal(+btn.dataset.i);
+});
+
+/* ---- the reusable loading-timeline component (System 2) ---- */
+const LT = (() => {
+  const barsHTML = n => {
+    let s = '';
+    for (let i = 0; i < n; i++){
+      const r = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+      s += `<span style="left:${(i/(n-1)*100).toFixed(2)}%;height:${(16 + r*74).toFixed(1)}%"></span>`;
+    }
+    return s;
+  };
+  const WAVE = `<div class="w-dim">${barsHTML(22)}</div><div class="w-lit">${barsHTML(22)}</div>`;
+  const row = (tag, body) => `<div class="lt-row"><span class="lt-tag">${tag}</span>${body}</div>`;
+  const track = clip => `<div class="lt-track">${clip || ''}</div>`;
+  const clip = (label, l, w) => `<span class="lt-clip" style="left:${l}%;width:${w}%"><i>${label}</i></span>`;
+
+  function build(variant, status){
+    let rows = '';
+    if (variant === 'project'){
+      rows = row('V1', track(clip('PROJECT', 10, 76)))
+           + row('V2', track(clip('MEDIA', 28, 44)))
+           + row('A1', `<div class="lt-wave">${WAVE}</div>`);
+    } else if (variant === 'buffer'){
+      rows = row('V1', track(clip('VIDEO', 8, 82)))
+           + row('A1', `<div class="lt-wave">${WAVE}</div>`);
+    } else {
+      rows = row('V1', track(clip('OFFLINE', 8, 78)))
+           + row('V2', track())
+           + row('A1', `<div class="lt-wave">${WAVE}</div>`);
+    }
+    const el = document.createElement('div');
+    el.className = 'lt';
+    el.innerHTML = `<div class="lt-inner">
+        <div class="lt-rows">${rows}<div class="lt-ph"></div></div>
+        ${variant === 'offline' ? '<div class="lt-sub">PLAYHEAD PAUSED</div>' : ''}
+        <div class="lt-status"><span class="lt-dot" aria-hidden="true"></span><span class="lt-txt"></span></div>
+      </div>`;
+    const rowsEl = el.querySelector('.lt-rows');
+    const phEl   = el.querySelector('.lt-ph');
+    const waveEl = el.querySelector('.lt-wave');
+    const txtEl  = el.querySelector('.lt-txt');
+    const api = {
+      el,
+      setStatus(t){ txtEl.textContent = t; },
+      setProgress(f){                                  // REAL values only, never invented
+        if (f == null || !isFinite(f)){ el.classList.add('lt-idle'); return; }
+        el.classList.remove('lt-idle');
+        f = Math.min(1, Math.max(0, f));
+        phEl.style.transform = `translateX(${(f * (rowsEl.clientWidth - 30)).toFixed(1)}px)`;
+        if (waveEl) waveEl.style.setProperty('--ph', (f * 100).toFixed(1) + '%');
+      },
+      done(t){ el.classList.add('done'); txtEl.textContent = t; },
+      fade(){ el.classList.add('lt-out'); setTimeout(() => el.remove(), 380); },
+      destroy(){ el.remove(); },
+    };
+    api.setStatus(status);
+    return api;
+  }
+  return { build };
+})();
+
+/* ---- project load / buffer watch (real waiting only) ---- */
+let loadPhase = 'idle';        // idle | watching | loading | done
+let bufPhase  = 'idle';        // idle | watching | buffering
+let projLT = null, projTimer = 0, projShownAt = 0;
+let bufLT  = null, bufTimer = 0, bufShownAt = 0;
+let closingModal = false;
+
+function bufferedFrac(v){
+  try{
+    if (!v.duration || !isFinite(v.duration) || !v.buffered.length) return null;
+    return v.buffered.end(v.buffered.length - 1) / v.duration;
+  }catch(e){ return null; }
+}
+
+function clearLoadState(){
+  clearTimeout(projTimer); clearTimeout(bufTimer);
+  projLT = null; bufLT = null;
+  loadPhase = 'idle'; bufPhase = 'idle';
+  mFig.querySelectorAll('.lt-modal').forEach(n => n.remove());
+}
+
+function startProjectWatch(){
+  clearTimeout(projTimer);
+  projTimer = setTimeout(() => {                       // 400ms grace — fast loads stay invisible
+    if (closingModal || modal.hidden || loadPhase !== 'watching' || mVideo.readyState >= 3) return;
+    loadPhase = 'loading';
+    projLT = LT.build('project', 'LOADING PROJECT…');
+    projLT.el.classList.add('lt-modal');
+    projShownAt = performance.now();
+    projLT.setProgress(bufferedFrac(mVideo));
+    mFig.appendChild(projLT.el);
+  }, 400);
+}
+
+function finishProject(){
+  if (loadPhase === 'watching'){
+    loadPhase = 'done';
+    clearTimeout(projTimer);
+  } else if (loadPhase === 'loading' && projLT){
+    loadPhase = 'done';
+    const lt = projLT; projLT = null;
+    lt.done('RENDER COMPLETE');
+    lt.setProgress(1);
+    setTimeout(() => lt.fade(), Math.max(500, 800 - (performance.now() - projShownAt)));
+  } else {
+    loadPhase = 'done';
+  }
+}
+
+function bufferComplete(){
+  clearTimeout(bufTimer);
+  if (bufPhase === 'watching') bufPhase = 'idle';
+  if (bufPhase === 'buffering' && bufLT){
+    const lt = bufLT; bufLT = null; bufPhase = 'idle';
+    lt.done('BUFFERING COMPLETE');
+    setTimeout(() => lt.fade(), Math.max(350, 600 - (performance.now() - bufShownAt)));
+  }
+}
+
+function onVideoError(){
+  if (closingModal || modal.hidden) return;
+  clearLoadState();
+  const wrap = document.createElement('div');
+  wrap.className = 'lt-modal';
+  wrap.innerHTML = `<div class="lt-err">
+      <p class="lt-err-t">MEDIA OFFLINE</p>
+      <button class="lt-retry" type="button">RETRY
+        <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg>
+      </button></div>`;
+  mFig.appendChild(wrap);
+  wrap.querySelector('.lt-retry').addEventListener('click', () => {
+    wrap.remove();
+    loadPhase = 'watching';
+    mVideo.load();
+    mVideo.play().catch(()=>{});
+    startProjectWatch();
+  });
+}
+
+mVideo.addEventListener('loadeddata', finishProject);
+mVideo.addEventListener('canplay', finishProject);
+mVideo.addEventListener('playing', () => { finishProject(); bufferComplete(); });
+mVideo.addEventListener('progress', () => {
+  if (loadPhase === 'loading' && projLT) projLT.setProgress(bufferedFrac(mVideo));
+  if (bufPhase === 'buffering' && bufLT){
+    const f = bufferedFrac(mVideo);
+    bufLT.setProgress(f != null ? f : (mVideo.duration ? mVideo.currentTime / mVideo.duration : null));
+  }
+});
+mVideo.addEventListener('waiting', () => {             // genuine stall during playback
+  if (closingModal || loadPhase !== 'done') return;   // initial load is covered by the project loader
+  clearTimeout(bufTimer);
+  bufPhase = 'watching';
+  bufTimer = setTimeout(() => {
+    if (closingModal || loadPhase !== 'done' || mVideo.readyState >= 3) return;
+    bufPhase = 'buffering';
+    bufLT = LT.build('buffer', 'BUFFERING MEDIA…');
+    bufLT.el.classList.add('lt-modal');
+    bufShownAt = performance.now();
+    bufLT.setProgress(mVideo.duration ? mVideo.currentTime / mVideo.duration : null);
+    mFig.appendChild(bufLT.el);
+  }, 400);
+});
+mVideo.addEventListener('error', onVideoError);
+
+/* ---- network state — elegant, never destructive ---- */
+let netEl = null, netLT = null;
+function showNetOffline(){
+  if (netEl) return;
+  stopAllPreviews();
+  netEl = document.createElement('div');
+  netEl.className = 'net';
+  netEl.innerHTML = '<div class="net-head">MEDIA CONNECTION LOST</div>';
+  netLT = LT.build('offline', 'Waiting for connection…');
+  netLT.setProgress(!modal.hidden && !closingModal && mVideo.duration ? mVideo.currentTime / mVideo.duration : 0);
+  netEl.appendChild(netLT.el);
+  document.body.appendChild(netEl);
+  requestAnimationFrame(() => requestAnimationFrame(() => { if (netEl) netEl.classList.add('in'); }));
+}
+function retryFailedAssets(){
+  document.querySelectorAll('.co-retry').forEach(b => { if (b._do) b._do(); });
+  if (!modal.hidden && !closingModal && mVideo.error){
+    mFig.querySelectorAll('.lt-modal').forEach(n => n.remove());
+    loadPhase = 'watching';
+    mVideo.load();
+    mVideo.play().catch(()=>{});
+    startProjectWatch();
+  }
+}
+function hideNetOffline(){
+  if (!netEl || !netLT) return;
+  const el = netEl, lt = netLT;
+  netEl = null; netLT = null;
+  lt.done('CONNECTION RESTORED — RESUMING MEDIA…');
+  retryFailedAssets();
+  setTimeout(() => {
+    el.classList.remove('in');
+    setTimeout(() => el.remove(), 420);
+  }, 900);
+}
+addEventListener('offline', showNetOffline);
+addEventListener('online', hideNetOffline);
+
+/* ---- failed card assets — minimal state, working retry ---- */
+document.querySelectorAll('.card-media').forEach(btn => {
+  const img = btn.querySelector('img');
+  if (!img) return;
+  img.addEventListener('error', () => {
+    if (img.dataset.retried === '1'){
+      btn.classList.add('asset-offline');
+      if (!btn.querySelector('.card-offline')){
+        const d = document.createElement('div');
+        d.className = 'card-offline';
+        d.innerHTML = `<span class="co-t">MEDIA OFFLINE</span>
+          <span class="co-retry" role="button" tabindex="0">RETRY
+            <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg>
+          </span>`;
+        btn.appendChild(d);
+        const r = d.querySelector('.co-retry');
+        const doRetry = () => {
+          btn.classList.remove('asset-offline');
+          delete img.dataset.retried;
+          img.src = img.getAttribute('src');
+        };
+        r._do = doRetry;
+        r.addEventListener('click', e => { e.stopPropagation(); doRetry(); });
+        r.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); doRetry(); }
+        });
+      }
+    } else {
+      img.dataset.retried = '1';
+      img.src = img.getAttribute('src');               // one silent retry
+    }
+  });
+  img.addEventListener('load', () => btn.classList.remove('asset-offline'));
+});
+
+/* ---- modal open/close ---- */
+function openModal(i){
+  const p = PROJECTS[i];
+  if (!p || !p.videoUrl) return;
+  lastFocus = document.activeElement;
+  closingModal = false;
+  clearLoadState();
+  mTitle.textContent = p.title;
+  mMeta.textContent  = (p.category + ' · ' + p.platform + ' — ' + p.year + ' — ' + p.duration).toUpperCase();
+  mDesc.textContent  = p.description || '';
+  mDesc.hidden = !p.description;
+  const vertical = p.aspect === '9/16';
+  mFig.className = 'modal-media ' + (vertical ? 'r916' : 'r169');
+  mBody.classList.toggle('v', vertical);
+  mVideo.muted = true; syncMute();
+  mVideo.src = p.videoUrl;
+  mFill.style.width = '0%'; mTime.textContent = '00:00 / 00:00';
+  modal.hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
+  document.documentElement.classList.add('locked');
+  lenis && lenis.stop();
+  Sound.duck(true);
+  stopAllPreviews();
+  mClose.focus();
+  loadPhase = 'watching';
+  startProjectWatch();                                  // shows only if genuinely slow
+  mVideo.play().catch(()=>{});
+  syncPlay();
+}
+function closeModal(){
+  if (modal.hidden) return;
+  closingModal = true;
+  clearLoadState();
+  mVideo.pause(); mVideo.removeAttribute('src'); mVideo.load();
+  modal.classList.remove('open');
+  document.documentElement.classList.remove('locked');
+  lenis && lenis.start();
+  Sound.duck(false);
+  setTimeout(() => { modal.hidden = true; closingModal = false; }, 320);
+  lastFocus && lastFocus.focus && lastFocus.focus();
+}
+
+mVideo.addEventListener('loadedmetadata', () => {
+  mTime.textContent = '00:00 / ' + fmt(mVideo.duration);
+  mTrack.setAttribute('aria-valuemax', Math.floor(mVideo.duration || 0));
+});
+mVideo.addEventListener('timeupdate', () => {
+  if (!mVideo.duration) return;
+  mFill.style.width = (mVideo.currentTime / mVideo.duration * 100) + '%';
+  mTime.textContent = fmt(mVideo.currentTime) + ' / ' + fmt(mVideo.duration);
+  mTrack.setAttribute('aria-valuenow', Math.floor(mVideo.currentTime));
+});
+mVideo.addEventListener('click', togglePlay);
+mVideo.addEventListener('play',  syncPlay);
+mVideo.addEventListener('pause', syncPlay);
+mVideo.addEventListener('ended', syncPlay);
+mPlay.addEventListener('click', togglePlay);
+mMute.addEventListener('click', () => { mVideo.muted = !mVideo.muted; syncMute(); });
+modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeModal));
+
+/* scrubber */
+let seeking = false;
+function seekClientX(cx){
+  const r = mTrack.getBoundingClientRect();
+  const f = Math.min(1, Math.max(0, (cx - r.left) / r.width));
+  if (mVideo.duration) mVideo.currentTime = f * mVideo.duration;
+}
+mTrack.addEventListener('pointerdown', e => { seeking = true; mTrack.setPointerCapture(e.pointerId); seekClientX(e.clientX); });
+mTrack.addEventListener('pointermove', e => { if (seeking) seekClientX(e.clientX); });
+['pointerup','pointercancel'].forEach(ev => mTrack.addEventListener(ev, () => { seeking = false; }));
+mTrack.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
+    e.preventDefault();
+    mVideo.currentTime = Math.max(0, Math.min(mVideo.duration || 0, mVideo.currentTime + (e.key === 'ArrowLeft' ? -5 : 5)));
+  }
+});
+
+/* keyboard: Esc, Space/K, M, arrows, focus trap */
+document.addEventListener('keydown', e => {
+  if (modal.hidden){ if (e.key === 'Escape') closeMenu(); return; }
+  if (e.key === 'Escape'){ closeModal(); }
+  else if (e.key === ' ' || e.key.toLowerCase() === 'k'){
+    if (!e.target.closest('button, a, .m-track')){ e.preventDefault(); togglePlay(); }
+  }
+  else if (e.key.toLowerCase() === 'm'){ mVideo.muted = !mVideo.muted; syncMute(); }
+  else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && e.target !== mTrack){
+    mVideo.currentTime = Math.max(0, Math.min(mVideo.duration || 0, mVideo.currentTime + (e.key === 'ArrowLeft' ? -5 : 5)));
+  }
+  else if (e.key === 'Tab'){
+    const f = [...modal.querySelectorAll('button, a, [tabindex="0"]')].filter(el => !el.disabled && el.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length-1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+});
+
+/* ============================================================
+   SYSTEM 1 · OPENING — "THE CUT"
+   0.00-0.22  lanes draw in · clips grow V1→V2→A1 · timecode appears
+   0.22-0.60  the playhead sweeps, slowing into the center
+   0.62       THE CUT — the razor flashes, a soft click, the CUT flag
+   0.72-1.49  THE SPLIT — the doors part V1 → V2 → A1; hero revealed
+   1.56-1.96  remainders fade; the intro leaves; done by ~2s
+   ============================================================ */
+
+/* the requested easing, evaluated exactly */
+function cubicBezier(x1, y1, x2, y2){
+  const cx = 3*x1, bx = 3*(x2-x1)-cx, ax = 1-cx-bx;
+  const cy = 3*y1, by = 3*(y2-y1)-cy, ay = 1-cy-by;
+  const fx = t => ((ax*t + bx)*t + cx)*t;
+  const fy = t => ((ay*t + by)*t + cy)*t;
+  const dfx = t => (3*ax*t + 2*bx)*t + cx;
+  return t => {
+    if (t <= 0 || t >= 1) return t;
+    let x = t;
+    for (let i = 0; i < 6; i++){
+      const e = fx(x) - t;
+      if (Math.abs(e) < 1e-5) break;
+      const d = dfx(x);
+      if (Math.abs(d) < 1e-6) break;
+      x -= e/d;
+    }
+    return fy(x);
+  };
+}
+const INTRO_EASE = cubicBezier(0.22, 1, 0.36, 1);
+
+/* terminal handler — natural end, skip, failsafe and resize all land here */
+function finishIntro(){
+  if (introDone) return;
+  introDone = true;
+  clearTimeout(introSafetyT);
+  if (masterTl){ masterTl.kill(); masterTl = null; }
+  if (intro && intro._cleanupSkip){ intro._cleanupSkip(); intro._cleanupSkip = null; }
+  try { scrollTo(0,0); } catch(e){}
+  if (intro) intro.remove();
+  document.documentElement.classList.remove('pre-intro');
+  gsap.set(portrait, { x: P.hero.x, y: P.hero.y, scale: 1, visibility: 'visible', opacity: 1 });
+  [nav, $('.hero-left'), $('.hero-right'), $('.hero-foot')].forEach(el => {
+    if (el) gsap.set(el, { clearProps: 'all' });
+  });
+  lenis && lenis.start();                       // scroll released the moment the intro finishes
+  if (pendingRefresh){ pendingRefresh = false; ScrollTrigger.refresh(); }
+}
+
+function runIntro(){
+  try { sessionStorage.setItem('bh-intro', '1'); } catch(e){}
+  intro.dataset.live = '1';                     // tells the inline watchdog we're alive
+  /* failsafe FIRST: whatever happens, the page appears within 4s */
+  introSafetyT = setTimeout(finishIntro, 4000);
+
+  const board = $('#cutBoard'), phEl = $('#cutPH'), tcEl = $('#cutTC');
+  const razor = $('#cutRazor'), flag = $('#cutFlag');
+  const lanes  = Array.from(intro.querySelectorAll('.cut-lane'));
+  const clips  = Array.from(intro.querySelectorAll('.cut-clip'));
+  const tags   = Array.from(intro.querySelectorAll('.cut-tag'));
+  const tracks = Array.from(intro.querySelectorAll('.cut-track'));
+  const doorL  = intro.querySelector('.cut-door.l');
+  const doorR  = intro.querySelector('.cut-door.r');
+  const a1     = intro.querySelector('.cut-lane.a1');
+  const a1Trk  = a1.querySelector('.cut-track');
+  const a1Halves = a1.querySelectorAll('.cut-half');
+  const v1H = lanes[0].querySelectorAll('.cut-half');
+  const v2H = lanes[1].querySelectorAll('.cut-half');
+  const heroLeft = $('.hero-left'), heroRight = $('.hero-right'), heroFoot = $('.hero-foot');
+
+  /* the waveform — an identical copy in both halves, so it reads as
+     one wave until the razor slices it in two as well */
+  const bars = n => {
+    let s = '';
+    for (let i = 0; i < n; i++){
+      const r = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+      s += `<b style="left:${(i/(n-1)*100).toFixed(2)}%;height:${(18 + r*72).toFixed(1)}%"></b>`;
+    }
+    return s;
+  };
+  a1.querySelectorAll('.cut-wave').forEach(w => {
+    w.querySelector('.wd').innerHTML = bars(46);
+    w.querySelector('.wl').innerHTML = bars(46);
+  });
+
+  const travel = a1Trk.getBoundingClientRect().width / 2;   // playhead runs track-left → cut line
+  const exitX  = Math.round(innerWidth * 0.8);              // clip halves exit past the screen edges
+  const doorX  = Math.round(innerWidth * 0.55);             // the doors clear the viewport completely
+
+  const sw = { p: 0 };
+  const tcFmt = f => '00:00:' + String(Math.floor(f/24)).padStart(2,'0') + ':' + String(f % 24).padStart(2,'0');
+
+  masterTl = gsap.timeline();
+
+  masterTl
+    /* 0.00-0.22 — the lanes draw in from the left, centered */
+    .fromTo(lanes, { scaleX: 0 }, { scaleX: 1, duration: .18, stagger: .04, ease: INTRO_EASE }, 0)
+    .fromTo(tcEl, { opacity: 0 }, { opacity: 1, duration: .15 }, .02)
+    /* 0.06-0.34 — the clips grow to full width, one after another */
+    .fromTo(clips, { scaleX: 0 }, { scaleX: 1, duration: .20, stagger: .04, ease: INTRO_EASE }, .06)
+    .fromTo(phEl, { opacity: 0 }, { opacity: 1, duration: .08 }, .18)
+    /* 0.22-0.60 — the playhead sweeps, slowing into the center */
+    .to(sw, { p: 1, duration: .38, ease: 'power2.out', onUpdate(){
+        phEl.style.transform = `translateX(${(sw.p * travel).toFixed(1)}px)`;
+        a1Trk.style.setProperty('--phl', (sw.p * 100).toFixed(2) + '%');
+      } }, .22)
+    /* 0.62 — THE CUT: the razor flashes down the midline */
+    .call(() => Sound.razor(), null, .62)
+    .set(razor, { opacity: 1 }, .62)
+    .fromTo(razor, { scaleY: 0 }, { scaleY: 1, duration: .07, ease: 'power1.in' }, .62)
+    .fromTo(flag, { opacity: 0 }, { opacity: 1, duration: .12 }, .64)
+    .to(tcEl, { opacity: 0, duration: .18 }, .66)
+    .to(phEl, { opacity: 0, duration: .14 }, .68)
+    /* 0.72-1.49 — THE SPLIT: the halves part like doors, V1 → V2 → A1 */
+    .to(razor, { opacity: 0, duration: .45 }, .72)
+    .to(v1H, { x: i => (i === 0 ? -exitX : exitX), duration: .78, ease: INTRO_EASE }, .74)
+    .call(() => {                                        /* page visible behind the still-closed doors */
+        document.documentElement.classList.remove('pre-intro');
+      }, null, .76)
+    .to(doorL, { x: -doorX, duration: .82, ease: INTRO_EASE }, .78)
+    .to(doorR, { x:  doorX, duration: .82, ease: INTRO_EASE }, .78)
+    .to(intro.querySelectorAll('.door-edge'), { opacity: 1, duration: .1 }, .78)
+    .to([...tags, ...tracks], { opacity: 0, duration: .2 }, .80)
+    .to(flag, { opacity: 0, duration: .18 }, .82)
+    .to(v2H, { x: i => (i === 0 ? -exitX : exitX), duration: .78, ease: INTRO_EASE }, .86)
+    .to(a1Halves, { x: i => (i === 0 ? -exitX : exitX), scaleY: .08, duration: .78, ease: INTRO_EASE }, .94)
+    /* the hero settles into its exact final positions as the gap uncovers it */
+    .fromTo(heroLeft,  { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .55, ease: INTRO_EASE }, .96)
+    .fromTo(heroRight, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .55, ease: INTRO_EASE }, 1.00)
+    .fromTo(nav, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: .45, ease: INTRO_EASE }, 1.06)
+    .fromTo(heroFoot, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .45, ease: INTRO_EASE }, 1.49)
+    /* 1.56-1.96 — any remainder fades; the intro leaves the DOM */
+    .to(intro, { opacity: 0, duration: .28 }, 1.56)
+    .call(() => setTimeout(finishIntro, 0), null, 1.96);
+
+  /* the timecode counts up with the playhead */
+  masterTl.eventCallback('onUpdate', () => {
+    const t = masterTl.time();
+    if (t < 0.64) tcEl.textContent = tcFmt(Math.max(0, Math.round((t - .02) * 60)));
+  });
+
+  /* skip: any tap/click, or Escape, jumps straight to the final state */
+  function onSkipKey(e){
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End',' '].includes(e.key)) e.preventDefault();
+    if (e.key === 'Escape') finishIntro();
+  }
+  function onSkipPointer(){ finishIntro(); }
+  document.addEventListener('keydown', onSkipKey, true);
+  document.addEventListener('pointerdown', onSkipPointer, true);
+  intro._cleanupSkip = () => {
+    document.removeEventListener('keydown', onSkipKey, true);
+    document.removeEventListener('pointerdown', onSkipPointer, true);
+  };
+  /* touch scroll is held only while the intro owns the screen */
+  intro.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+}
+
+if (INTRO_RUN) runIntro();
+
+/* ============================================================
+   CLOCK (IST)
+   ============================================================ */
+const clockEl = $('#clock');
+function tickClock(){
+  try {
+    clockEl.textContent = 'IST ' + new Date().toLocaleTimeString('en-GB', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
+  } catch(e){ clockEl.textContent = ''; }
+}
+tickClock(); setInterval(tickClock, 15000);
+</script>
+</body>
+</html>
