@@ -10,7 +10,7 @@
 document.documentElement.classList.add('js');
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('pre-intro');
 </script>
-<link rel="preload" as="image" href="https://picsum.photos/seed/bharath-portrait/800/800.jpg">
+<link rel="preload" as="image" href="bharath_portfolio.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@200..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet">
@@ -319,14 +319,12 @@ html:not(.js) #intro{display:none}
    SECTIONS
    ============================================================ */
 section{padding:clamp(90px,11vh,150px) var(--pad)}
-#work,#more,#about{border-top:1px solid var(--line)}
+#work,#about{border-top:1px solid var(--line)}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(40px,6vh,64px)}
 .sec-head .idx{color:var(--accent);margin-bottom:14px}
 .sec-head h2{font-size:clamp(36px,6vw,80px);font-weight:300;letter-spacing:.015em;line-height:1;text-transform:uppercase}
 .sec-head .cap{padding-bottom:8px;color:var(--ink3)}
-#more .sec-head{flex-direction:row-reverse}
-#more .sh-left{text-align:right}
-@media(max-width:640px){.sec-head{padding-right:56px}#more .sec-head{padding-right:0;padding-left:56px}#more .sh-left{text-align:left}}
+@media(max-width:640px){.sec-head{padding-right:56px}}
 
 .row-label{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:14px 2px 18px;margin-bottom:26px}
 .row-label.mt{margin-top:clamp(48px,7vh,72px)}
@@ -371,48 +369,62 @@ section{padding:clamp(90px,11vh,150px) var(--pad)}
 /* ============================================================
    ABOUT
    ============================================================ */
-.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(48px,7vw,110px);align-items:start}
-.about-lead{font-size:clamp(30px,3.6vw,52px);font-weight:300;line-height:1.15}
-.about-body{margin-top:26px;font-size:clamp(16px,1.35vw,19px);font-weight:300;color:#cfcfca;line-height:1.7;max-width:56ch}
-.about-body + .about-body{margin-top:18px}
-.about-avail{margin-top:36px;display:flex;align-items:center;gap:10px}
+#about{border-top:1px solid var(--line);padding:clamp(56px,7vh,88px) var(--pad) clamp(56px,7vh,88px)}
+#about .sec-head{margin-bottom:clamp(28px,3.8vh,44px)}
+.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(36px,5vw,72px);align-items:start}
+.about-lead{font-size:clamp(28px,3.2vw,48px);font-weight:300;line-height:1.15}
+.about-body{margin-top:20px;font-size:clamp(15px,1.2vw,18px);font-weight:300;color:#cfcfca;line-height:1.65;max-width:54ch}
+.about-body + .about-body{margin-top:14px}
+.about-avail{margin-top:24px;display:flex;align-items:center;gap:10px}
 .about-avail i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.about-links{margin-top:42px;padding-top:26px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px clamp(20px,3vw,44px);list-style:none}
+.about-links{margin-top:28px;padding-top:20px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px clamp(16px,2.4vw,36px);list-style:none}
 .about-links a{display:inline-flex;align-items:center;gap:8px;color:var(--ink2);text-decoration:none;transition:color .25s}
 .about-links a svg{transition:transform .3s var(--ease)}
 .about-links a:hover{color:var(--ink)}
 .about-links a:hover svg{transform:translate(2px,-2px)}
-.about-photo{max-width:400px;justify-self:end;width:100%}
+.about-photo{max-width:380px;justify-self:end;width:100%}
 .about-photo img{width:100%;filter:saturate(.9) contrast(1.04);border:1px solid var(--line)}
-.about-photo figcaption{margin-top:12px;color:var(--ink3)}
-@media(max-width:860px){.about-grid{grid-template-columns:1fr}.about-photo{justify-self:start;max-width:340px}}
+.about-photo figcaption{margin-top:10px;color:var(--ink3)}
+@media(max-width:860px){
+  .about-grid{grid-template-columns:1fr;gap:36px}
+  .about-photo{justify-self:start;max-width:340px}
+}
 
 /* ============================================================
-   FOOTER + GLOBAL CTA
+   ABOUT CTA (integrated directly beneath social links)
    ============================================================ */
-footer{border-top:1px solid var(--line);padding:0 var(--pad)}
-.cta{display:block;text-decoration:none;color:var(--ink);padding:clamp(80px,11vh,136px) 0 clamp(64px,9vh,112px);border-bottom:1px solid var(--line)}
-.cta-in{display:block}
-.cta-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;margin-bottom:clamp(30px,4vh,48px)}
-.cta-line{display:flex;align-items:center;flex-wrap:wrap;column-gap:clamp(18px,3.5vw,56px);row-gap:10px}
-.cta-text{
-  font-size:clamp(38px,9.5vw,132px);font-weight:300;line-height:.98;
-  letter-spacing:.015em;text-transform:uppercase;max-width:100%;
+.about-cta{
+  display:block;text-decoration:none;color:var(--ink);
+  margin-top:clamp(24px,3vh,34px);
+  padding-top:clamp(18px,2.2vh,24px);
+  border-top:1px solid var(--line);
+}
+.about-cta .cta-in{display:block}
+.about-cta .cta-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 14px;margin-bottom:clamp(10px,1.4vh,16px)}
+.about-cta .cta-line{display:flex;align-items:center;flex-wrap:nowrap;column-gap:clamp(16px,2.2vw,36px)}
+.about-cta .cta-text{
+  font-size:clamp(38px,5.2vw,78px);font-weight:300;line-height:.96;
+  letter-spacing:.015em;text-transform:uppercase;white-space:nowrap;
   color:#c9c9c4;
   transition:color .45s var(--ease),transform .45s var(--ease);
 }
-.cta-arrow{
-  width:clamp(52px,8vw,116px);height:auto;aspect-ratio:3/1;flex:none;
+.about-cta .cta-arrow{
+  width:clamp(52px,6.5vw,98px);height:auto;aspect-ratio:3/1;flex:none;
   color:#c9c9c4;
   transition:color .45s var(--ease),transform .45s var(--ease);
 }
-.cta:hover .cta-text,.cta:focus-visible .cta-text{
+.about-cta:hover .cta-text,.about-cta:focus-visible .cta-text{
   color:var(--ink);
   transform:translateX(clamp(6px,.8vw,12px));
 }
-.cta:hover .cta-arrow,.cta:focus-visible .cta-arrow{
+.about-cta:hover .cta-arrow,.about-cta:focus-visible .cta-arrow{
   color:var(--accent);
-  transform:translateX(clamp(10px,2vw,26px));
+  transform:translateX(clamp(10px,1.6vw,22px));
+}
+@media(max-width:860px){
+  .about-cta .cta-text{font-size:clamp(28px,7.2vw,44px);white-space:nowrap}
+  .about-cta .cta-arrow{width:clamp(40px,9vw,64px)}
+  .about-cta .cta-line{column-gap:clamp(12px,2.8vw,22px)}
 }
 .foot-in{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;padding-top:44px}
 .foot-brand{font-size:15px;letter-spacing:.24em;font-weight:500}
@@ -439,6 +451,7 @@ footer{border-top:1px solid var(--line);padding:0 var(--pad)}
 .modal-media{position:relative;background:#000;border:1px solid var(--line);overflow:hidden}
 .modal-media.r169{aspect-ratio:16/9}
 .modal-media.r916{aspect-ratio:9/16;height:min(72svh,720px);margin:0 auto}
+.modal-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 .modal-media video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
 .modal-controls{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:7px 12px;background:rgba(10,10,10,.78);border-top:1px solid var(--line)}
 .m-btn{width:34px;height:34px;display:grid;place-items:center;color:var(--ink);flex:none}
@@ -549,10 +562,11 @@ setTimeout(function(){
     <a class="menu-link" href="#about">ABOUT</a>
   </nav>
   <div class="menu-foot mono">
-    <a href="https://instagram.com/" target="_blank" rel="noopener">INSTAGRAM</a>
-    <a href="https://youtube.com/" target="_blank" rel="noopener">YOUTUBE</a>
-    <a href="mailto:hello@bharath.work">EMAIL</a>
-    <a href="https://linkedin.com/" target="_blank" rel="noopener">LINKEDIN</a>
+    <a id="mLinkInstagram" href="https://www.instagram.com/bharath_burji/" target="_blank" rel="noopener">INSTAGRAM</a>
+    <a id="mLinkYoutube" href="https://www.youtube.com/@BharathBurji" target="_blank" rel="noopener">YOUTUBE</a>
+    <a id="mLinkLinkedin" href="https://www.linkedin.com/in/bharathburji/" target="_blank" rel="noopener">LINKEDIN</a>
+    <a id="mLinkWhatsapp" href="https://wa.me/COUNTRYCODEPHONENUMBER?text=Hi%20Bharath!%20I%20came%20across%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20potential%20project%20with%20you." target="_blank" rel="noopener">WHATSAPP</a>
+    <a id="mLinkEmail" href="mailto:bharathburji@gmail.com">EMAIL</a>
   </div>
 </div>
 
@@ -567,7 +581,7 @@ setTimeout(function(){
       <div class="portrait-spacer" aria-hidden="true"></div>
       <div class="hero-right">
         <p class="hero-statement">I create videos that make people stop, watch, and remember<span class="dot">.</span></p>
-        <p class="hero-count mono">( 12 PROJECTS — 2024 → 2026 )</p>
+        <p class="hero-count mono">( 03 PROJECTS — 2024 )</p>
       </div>
     </div>
     <div class="hero-foot">
@@ -591,45 +605,14 @@ setTimeout(function(){
           <p class="mono idx">01</p>
           <h2>SELECTED WORK<span class="dot">.</span></h2>
         </div>
-        <p class="mono cap">SIX FILMS — LONG &amp; SHORT FORM</p>
+        <p class="mono cap">THREE FILMS — 16:9</p>
       </header>
 
       <div class="row-label reveal">
-        <span class="mono">LONG-FORM — 16:9</span>
+        <span class="mono">FEATURED EDITS — 16:9</span>
         <span class="mono dim">01 — 03</span>
       </div>
       <div class="grid" id="g-sel-wide"></div>
-
-      <div class="row-label mt reveal">
-        <span class="mono">SHORT-FORM — 9:16</span>
-        <span class="mono dim">04 — 06</span>
-      </div>
-      <div class="grid" id="g-sel-tall"></div>
-    </div>
-  </section>
-
-  <!-- ================= MORE WORK ================= -->
-  <section id="more" aria-label="More work">
-    <div class="wrap">
-      <header class="sec-head reveal">
-        <div class="sh-left">
-          <p class="mono idx">02</p>
-          <h2>MORE WORK<span class="dot">.</span></h2>
-        </div>
-        <p class="mono cap">REELS &amp; CLIENT WORK</p>
-      </header>
-
-      <div class="row-label reveal">
-        <span class="mono">VERTICAL — 9:16</span>
-        <span class="mono dim">07 — 09</span>
-      </div>
-      <div class="grid" id="g-more-tall"></div>
-
-      <div class="row-label mt reveal">
-        <span class="mono">HORIZONTAL — 16:9</span>
-        <span class="mono dim">10 — 12</span>
-      </div>
-      <div class="grid" id="g-more-wide"></div>
     </div>
   </section>
 
@@ -638,10 +621,9 @@ setTimeout(function(){
     <div class="wrap">
       <header class="sec-head reveal">
         <div class="sh-left">
-          <p class="mono idx">03</p>
+          <p class="mono idx">02</p>
           <h2>ABOUT<span class="dot">.</span></h2>
         </div>
-        <p class="mono cap">BASED IN INDIA — WORKING ANYWHERE</p>
       </header>
 
       <div class="about-grid">
@@ -651,41 +633,43 @@ setTimeout(function(){
           <p class="about-body reveal">Most of my work lives on YouTube and Instagram — long-form films, brand videos and short-form edits. I care about rhythm, restraint, and the fraction of a second before a cut. If a frame doesn&rsquo;t earn its place, it doesn&rsquo;t stay.</p>
           <p class="about-avail mono reveal"><i aria-hidden="true"></i>AVAILABLE FOR FREELANCE — 2026</p>
           <ul class="about-links reveal">
-            <li><a class="mono" href="https://instagram.com/" target="_blank" rel="noopener">INSTAGRAM
+            <li><a class="mono" id="linkInstagram" href="https://www.instagram.com/bharath_burji/" target="_blank" rel="noopener">INSTAGRAM
               <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
-            <li><a class="mono" href="https://youtube.com/" target="_blank" rel="noopener">YOUTUBE
+            <li><a class="mono" id="linkYoutube" href="https://www.youtube.com/@BharathBurji" target="_blank" rel="noopener">YOUTUBE
               <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
-            <li><a class="mono" href="mailto:hello@bharath.work">EMAIL
+            <li><a class="mono" id="linkLinkedin" href="https://www.linkedin.com/in/bharathburji/" target="_blank" rel="noopener">LINKEDIN
               <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
-            <li><a class="mono" href="https://linkedin.com/" target="_blank" rel="noopener">LINKEDIN
+            <li><a class="mono" id="linkWhatsapp" href="https://wa.me/COUNTRYCODEPHONENUMBER?text=Hi%20Bharath!%20I%20came%20across%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20potential%20project%20with%20you." target="_blank" rel="noopener">WHATSAPP
+              <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
+            <li><a class="mono" id="linkEmail" href="mailto:bharathburji@gmail.com">EMAIL
               <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
           </ul>
+
+          <!-- ================= GET IN TOUCH (WHATSAPP CALL TO ACTION) ================= -->
+          <a class="cta about-cta reveal" id="ctaWhatsapp" href="https://wa.me/COUNTRYCODEPHONENUMBER?text=Hi%20Bharath!%20I%20came%20across%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20potential%20project%20with%20you." target="_blank" rel="noopener" aria-label="Get in touch on WhatsApp">
+            <span class="cta-in">
+              <span class="cta-top mono">
+                <span>03 — GET IN TOUCH</span>
+              </span>
+              <span class="cta-line">
+                <span class="cta-text">GET IN TOUCH</span>
+                <svg class="cta-arrow" viewBox="0 0 72 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 12h62M52 3l11 9-11 9"/>
+                </svg>
+              </span>
+            </span>
+          </a>
         </div>
         <figure class="about-photo reveal">
-          <img src="https://picsum.photos/seed/bharath-edit/800/1000.jpg" alt="Bharath working at his editing desk" loading="lazy" decoding="async">
-          <figcaption class="mono">BHARATH — BETWEEN TWO CUTS</figcaption>
+          <img id="aboutImg" src="bharath_burji_(1).jpeg" alt="Bharath" loading="lazy" decoding="async">
+          <figcaption class="mono" id="aboutCaption">BHARATH — BETWEEN TWO CUTS</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- ================= FOOTER (global — CTA + info) ================= -->
+  <!-- ================= FOOTER ================= -->
   <footer>
-    <a class="cta reveal" href="#about" aria-label="Get in touch">
-      <span class="wrap cta-in">
-        <span class="cta-top mono">
-          <span>04 — CONTACT</span>
-          <span class="dim">HELLO@BHARATH.WORK</span>
-        </span>
-        <span class="cta-line">
-          <span class="cta-text">GET IN TOUCH</span>
-          <svg class="cta-arrow" viewBox="0 0 72 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M2 12h62M52 3l11 9-11 9"/>
-          </svg>
-        </span>
-      </span>
-    </a>
-
     <div class="foot-in">
       <div>
         <p class="foot-brand">BHARATH</p>
@@ -703,7 +687,7 @@ setTimeout(function(){
 
 <!-- portrait: fixed circular shared element (hero center → nav, beside the wordmark) -->
 <button id="portrait" type="button" aria-label="Back to top">
-  <img src="https://picsum.photos/seed/bharath-portrait/800/800.jpg" alt="Portrait of Bharath">
+  <img src="bharath_portfolio.png" alt="Portrait of Bharath">
 </button>
 
 <!-- ================= MODAL PLAYER ================= -->
@@ -720,8 +704,9 @@ setTimeout(function(){
       </button>
     </div>
     <figure class="modal-media r169" id="mFig">
-      <video id="mVideo" playsinline preload="metadata"></video>
-      <div class="modal-controls">
+      <iframe id="mIframe" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <video id="mVideo" playsinline preload="none" style="display:none"></video>
+      <div class="modal-controls" style="display:none">
         <button class="m-btn" id="mPlay" type="button" aria-label="Play">
           <span class="ic" id="icPlay"><svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 1l10 6-10 6z" fill="currentColor"/></svg></span>
           <span class="ic" id="icPause" hidden><svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1.5 1h3v12h-3zM7.5 1h3v12h-3z" fill="currentColor"/></svg></span>
@@ -736,7 +721,7 @@ setTimeout(function(){
         </button>
       </div>
     </figure>
-    <p class="modal-desc" id="mDesc"></p>
+    <p class="modal-desc" id="mDesc" hidden></p>
   </div>
 </div>
 
@@ -745,48 +730,111 @@ setTimeout(function(){
 <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
 <script>
 /* ============================================================
+   PERSONAL CONFIGURATION
+   Update your social media links, WhatsApp number, and About photo here.
+   ============================================================ */
+const CONFIG = {
+  // 1. WhatsApp Contact Integration
+  // Enter your country code + phone number without '+' or spaces. Example: '919876543210' (for India +91)
+  whatsappNumber: 'COUNTRYCODEPHONENUMBER',
+  
+  // Pre-filled message sent when someone clicks "GET IN TOUCH" or the WhatsApp link
+  whatsappMessage: 'Hi Bharath! I came across your portfolio and would like to discuss a potential project with you.',
+
+  // 2. Social Media URLs (Update with your actual profile URLs)
+  instagram: 'https://www.instagram.com/bharath_burji/',
+  youtube:   'https://www.youtube.com/@BharathBurji',
+  linkedin:  'https://www.linkedin.com/in/bharathburji/',
+  email:     'mailto:bharathburji@gmail.com',
+
+  // 3. About Section Photograph
+  // Place your image file (e.g. 'about_photo.jpg') in this project folder or provide an image URL:
+  aboutPhoto: 'bharath_burji_(1).jpeg',
+  aboutPhotoCaption: 'BHARATH — BETWEEN TWO CUTS',
+};
+
+// Helper: formats a compliant WhatsApp click-to-chat URL with encoded message
+function buildWhatsAppUrl(phone, msg) {
+  const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+  const encodedMsg = encodeURIComponent(msg || '');
+  return `https://wa.me/${cleanPhone || 'COUNTRYCODEPHONENUMBER'}?text=${encodedMsg}`;
+}
+
+// Hydrate links and images across the page from CONFIG
+function applyProfileConfig() {
+  const waUrl = buildWhatsAppUrl(CONFIG.whatsappNumber, CONFIG.whatsappMessage);
+
+  // WhatsApp CTA button in About section
+  const cta = document.getElementById('ctaWhatsapp');
+  if (cta) cta.href = waUrl;
+
+  // About section social links
+  const linkIg = document.getElementById('linkInstagram');
+  if (linkIg && CONFIG.instagram) linkIg.href = CONFIG.instagram;
+  const linkYt = document.getElementById('linkYoutube');
+  if (linkYt && CONFIG.youtube) linkYt.href = CONFIG.youtube;
+  const linkLi = document.getElementById('linkLinkedin');
+  if (linkLi && CONFIG.linkedin) linkLi.href = CONFIG.linkedin;
+  const linkWa = document.getElementById('linkWhatsapp');
+  if (linkWa) linkWa.href = waUrl;
+  const linkEm = document.getElementById('linkEmail');
+  if (linkEm && CONFIG.email) linkEm.href = CONFIG.email;
+
+  // Mobile navigation drawer links
+  const mIg = document.getElementById('mLinkInstagram');
+  if (mIg && CONFIG.instagram) mIg.href = CONFIG.instagram;
+  const mYt = document.getElementById('mLinkYoutube');
+  if (mYt && CONFIG.youtube) mYt.href = CONFIG.youtube;
+  const mLi = document.getElementById('mLinkLinkedin');
+  if (mLi && CONFIG.linkedin) mLi.href = CONFIG.linkedin;
+  const mWa = document.getElementById('mLinkWhatsapp');
+  if (mWa) mWa.href = waUrl;
+  const mEm = document.getElementById('mLinkEmail');
+  if (mEm && CONFIG.email) mEm.href = CONFIG.email;
+
+  // About section photograph and caption
+  const aboutImg = document.getElementById('aboutImg');
+  if (aboutImg && CONFIG.aboutPhoto) aboutImg.src = CONFIG.aboutPhoto;
+  const aboutCap = document.getElementById('aboutCaption');
+  if (aboutCap && CONFIG.aboutPhotoCaption) aboutCap.textContent = CONFIG.aboutPhotoCaption;
+}
+applyProfileConfig();
+
+/* ============================================================
    PROJECT DATA — replace thumbs / videoUrl with real work.
    ============================================================ */
-const GTB = 'https://storage.googleapis.com/gtv-videos-bucket/sample/';
-const IMG = 'https://picsum.photos/seed/';
-
+/* ============================================================
+   PROJECT DATA — 3 YouTube Featured Edits (16:9)
+   Thumbnails and embed URLs are easily configurable.
+   ============================================================ */
 const PROJECTS = [
-  { title:'The Quiet Hours', category:'Documentary', platform:'YouTube', year:'2024', duration:'12:48', aspect:'16/9',
-    description:'A city examined between 3 and 5 AM — slow pans, empty streets, one narrator.',
-    thumb: IMG+'quiet-hours/1280/720.jpg', videoUrl: GTB+'BigBuckBunny.mp4' },
-  { title:'Vellum', category:'Brand Film', platform:'Client', year:'2024', duration:'01:30', aspect:'16/9',
-    description:'Launch film for a small stationery label. Paper, hands, light.',
-    thumb: IMG+'vellum-paper/1280/720.jpg', videoUrl: GTB+'ForBiggerBlazes.mp4' },
-  { title:'Field Notes, Kerala', category:'Travel Film', platform:'YouTube', year:'2023', duration:'09:36', aspect:'16/9',
-    description:'Ten days of rain, backwaters and slow mornings, cut to a monsoon rhythm.',
-    thumb: IMG+'kerala-rain/1280/720.jpg', videoUrl: GTB+'ElephantsDream.mp4' },
-  { title:'Streets at 5AM', category:'Reel', platform:'Instagram', year:'2025', duration:'00:38', aspect:'9/16',
-    description:'One street, one hour, thirty-eight seconds.',
-    thumb: IMG+'streets-5am/720/1280.jpg', videoUrl: GTB+'ForBiggerEscapes.mp4' },
-  { title:'Two Minutes of Calm', category:'Short', platform:'Instagram', year:'2024', duration:'01:54', aspect:'9/16',
-    description:'A breathing exercise edited to actually slow you down.',
-    thumb: IMG+'calm-water/720/1280.jpg', videoUrl: GTB+'ForBiggerFun.mp4' },
-  { title:'Rush Hour, Reversed', category:'Reel', platform:'Instagram', year:'2024', duration:'00:29', aspect:'9/16',
-    description:'Traffic played backwards until it looks like choreography.',
-    thumb: IMG+'rush-hour/720/1280.jpg', videoUrl: GTB+'ForBiggerJoyrides.mp4' },
-  { title:'Sound On', category:'Reel', platform:'YouTube Shorts', year:'2025', duration:'00:45', aspect:'9/16',
-    description:'An edit built entirely around one sound — every cut lands on the transient.',
-    thumb: IMG+'sound-on/720/1280.jpg', videoUrl: GTB+'ForBiggerMeltdowns.mp4' },
-  { title:'Frame by Frame', category:'Series', platform:'Instagram', year:'2024', duration:'00:52', aspect:'9/16',
-    description:'Twelve films about how a single frame can carry a whole story.',
-    thumb: IMG+'frame-frame/720/1280.jpg', videoUrl: GTB+'Sintel.mp4' },
-  { title:'Monsoon Walk', category:'Short', platform:'YouTube Shorts', year:'2024', duration:'00:31', aspect:'9/16',
-    description:'Point-of-view walk through the first rain of the season.',
-    thumb: IMG+'monsoon-walk/720/1280.jpg', videoUrl: GTB+'TearsOfSteel.mp4' },
-  { title:'The Coffee Ritual', category:'Brand Film', platform:'Client', year:'2023', duration:'02:12', aspect:'16/9',
-    description:'A morning routine, re-cut as a ritual. Sixty takes, ninety shots, one cup.',
-    thumb: IMG+'coffee-ritual/1280/720.jpg', videoUrl: GTB+'SubaruOutbackOnStreetAndDirt.mp4' },
-  { title:'Wedding, Unscripted', category:'Wedding Film', platform:'Client', year:'2023', duration:'06:24', aspect:'16/9',
-    description:'No poses, no stage. Just what actually happened, in the order it felt.',
-    thumb: IMG+'wedding-unscripted/1280/720.jpg', videoUrl: GTB+'VolkswagenGTIReview.mp4' },
-  { title:'Afterhours', category:'Music Video', platform:'Client', year:'2025', duration:'03:18', aspect:'16/9',
-    description:'A night drive cut to a slow track — every headlight gets its moment.',
-    thumb: IMG+'afterhours-drive/1280/720.jpg', videoUrl: GTB+'WeAreGoingOnBullrun.mp4' },
+  {
+    id: 'mTf7LpQr1l8',
+    title: 'Documentary Edit',
+    sub: 'YOUTUBE · 16:9',
+    duration: '00:47',
+    aspect: '16/9',
+    thumb: 'https://img.youtube.com/vi/mTf7LpQr1l8/maxresdefault.jpg',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/mTf7LpQr1l8?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1'
+  },
+  {
+    id: 'E4hufa3dUHc',
+    title: 'Project 02',
+    sub: 'YOUTUBE · 16:9',
+    duration: '00:29',
+    aspect: '16/9',
+    thumb: 'https://img.youtube.com/vi/E4hufa3dUHc/maxresdefault.jpg',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/E4hufa3dUHc?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1'
+  },
+  {
+    id: 'fYjCpOPzdaM',
+    title: 'Project 03',
+    sub: 'YOUTUBE · 16:9',
+    duration: '00:50',
+    aspect: '16/9',
+    thumb: 'https://img.youtube.com/vi/fYjCpOPzdaM/maxresdefault.jpg',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/fYjCpOPzdaM?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1'
+  }
 ];
 
 /* ============================================================
@@ -796,27 +844,28 @@ const PLAY_SVG = '<svg viewBox="0 0 10 12" width="9" height="11" aria-hidden="tr
 
 function cardHTML(p, i, showDesc){
   const vertical = p.aspect === '9/16';
+  const subText = p.sub || [p.category, p.platform, p.year].filter(Boolean).join(' · ') || 'YOUTUBE · 16:9';
   return `
   <article class="card reveal${vertical ? ' vertical' : ''}">
     <button class="card-media ${vertical ? 'r916' : 'r169'}" type="button" data-i="${i}" aria-label="Play ${p.title} — ${p.duration}" aria-describedby="desc-${i}">
-      <img src="${p.thumb}" alt="" loading="lazy" decoding="async">
+      <img src="${p.thumb}" alt="${p.title}" loading="lazy" decoding="async">
       <video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
       <span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>
       <span class="dur" aria-hidden="true">${p.duration}</span>
     </button>
     <div class="card-meta">
       <h3 class="card-title">${p.title}</h3>
-      <p class="card-sub mono">${p.category} · ${p.platform} — ${p.year}</p>
+      <p class="card-sub mono">${subText}</p>
       ${showDesc && p.description ? `<p class="card-desc" id="desc-${i}">${p.description}</p>` : `<span id="desc-${i}" hidden></span>`}
     </div>
   </article>`;
 }
 
 function render(){
-  document.getElementById('g-sel-wide').innerHTML  = PROJECTS.slice(0,3).map((p,i)=>cardHTML(p,i,false)).join('');
-  document.getElementById('g-sel-tall').innerHTML  = PROJECTS.slice(3,6).map((p,i)=>cardHTML(p,i+3,false)).join('');
-  document.getElementById('g-more-tall').innerHTML = PROJECTS.slice(6,9).map((p,i)=>cardHTML(p,i+6,true)).join('');
-  document.getElementById('g-more-wide').innerHTML = PROJECTS.slice(9,12).map((p,i)=>cardHTML(p,i+9,true)).join('');
+  const selWide = document.getElementById('g-sel-wide');
+  if (selWide) selWide.innerHTML = PROJECTS.map((p,i)=>cardHTML(p,i,false)).join('');
+  const selTall = document.getElementById('g-sel-tall');
+  if (selTall) selTall.innerHTML = '';
 }
 render();
 
@@ -996,8 +1045,8 @@ function startPreview(btn){
   const v = btn.querySelector('video');
   if (v && v.dataset.dead) return;
   const p = PROJECTS[+btn.dataset.i];
-  if (!v || !p || !p.videoUrl) return;
-  if (!v.src) v.src = p.videoUrl;
+  if (!v || !p || !p.previewUrl) return;
+  if (!v.src) v.src = p.previewUrl;
   v.play().catch(()=>{});
   btn.classList.add('previewing');
 }
@@ -1474,7 +1523,7 @@ const Stars = (() => {
    MODAL PLAYER + SYSTEM 2 (loading / buffering / network)
    ============================================================ */
 const modal  = $('#modal'), mBody = $('#mBody'), mFig = $('#mFig');
-const mVideo = $('#mVideo'), mTitle = $('#mTitle'), mMeta = $('#mMeta'), mDesc = $('#mDesc');
+const mVideo = $('#mVideo'), mIframe = $('#mIframe'), mTitle = $('#mTitle'), mMeta = $('#mMeta'), mDesc = $('#mDesc');
 const mPlay  = $('#mPlay'), mMute = $('#mMute'), mClose = $('#mClose');
 const mTime  = $('#mTime'), mTrack = $('#mTrack'), mFill = $('#mFill');
 const icPlay = $('#icPlay'), icPause = $('#icPause'), icVol = $('#icVol'), icMut = $('#icMut');
@@ -1735,20 +1784,33 @@ document.querySelectorAll('.card-media').forEach(btn => {
 /* ---- modal open/close ---- */
 function openModal(i){
   const p = PROJECTS[i];
-  if (!p || !p.videoUrl) return;
+  if (!p || (!p.embedUrl && !p.videoUrl)) return;
   lastFocus = document.activeElement;
   closingModal = false;
   clearLoadState();
   mTitle.textContent = p.title;
-  mMeta.textContent  = (p.category + ' · ' + p.platform + ' — ' + p.year + ' — ' + p.duration).toUpperCase();
+  mMeta.textContent  = (p.sub ? p.sub + ' — ' + p.duration : 'YOUTUBE · 16:9 — ' + p.duration).toUpperCase();
   mDesc.textContent  = p.description || '';
   mDesc.hidden = !p.description;
   const vertical = p.aspect === '9/16';
   mFig.className = 'modal-media ' + (vertical ? 'r916' : 'r169');
   mBody.classList.toggle('v', vertical);
-  mVideo.muted = true; syncMute();
-  mVideo.src = p.videoUrl;
-  mFill.style.width = '0%'; mTime.textContent = '00:00 / 00:00';
+  if (p.embedUrl){
+    if (mVideo){ mVideo.style.display = 'none'; mVideo.removeAttribute('src'); }
+    if (mIframe){ mIframe.style.display = 'block'; mIframe.src = p.embedUrl; }
+  } else {
+    if (mIframe){ mIframe.style.display = 'none'; mIframe.src = ''; }
+    if (mVideo){
+      mVideo.style.display = 'block';
+      mVideo.muted = true; syncMute();
+      mVideo.src = p.videoUrl;
+      mFill.style.width = '0%'; mTime.textContent = '00:00 / 00:00';
+      loadPhase = 'watching';
+      startProjectWatch();
+      mVideo.play().catch(()=>{});
+      syncPlay();
+    }
+  }
   modal.hidden = false;
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
   document.documentElement.classList.add('locked');
@@ -1756,16 +1818,17 @@ function openModal(i){
   Sound.duck(true);
   stopAllPreviews();
   mClose.focus();
-  loadPhase = 'watching';
-  startProjectWatch();                                  // shows only if genuinely slow
-  mVideo.play().catch(()=>{});
-  syncPlay();
 }
 function closeModal(){
   if (modal.hidden) return;
   closingModal = true;
   clearLoadState();
-  mVideo.pause(); mVideo.removeAttribute('src'); mVideo.load();
+  if (mIframe){
+    mIframe.src = '';
+  }
+  if (mVideo){
+    try { mVideo.pause(); mVideo.removeAttribute('src'); } catch(e){}
+  }
   modal.classList.remove('open');
   document.documentElement.classList.remove('locked');
   lenis && lenis.start();
