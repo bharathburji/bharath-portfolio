@@ -1,0 +1,8 @@
+{
+  "rewrites":[
+    {
+      "source":"/",
+      "destination": "/Bharathburji1_1.html"
+    }
+  ]
+}
