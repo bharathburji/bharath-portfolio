@@ -477,6 +477,25 @@ section{padding:clamp(90px,11vh,150px) var(--pad)}
 .modal-body.v .modal-desc{max-width:400px}
 
 /* ============================================================
+   CONTACT MODAL
+   ============================================================ */
+.contact-modal-body{width:min(520px,100%);background:rgba(12,12,12,.97);border:1px solid var(--line);padding:clamp(22px,3.5vw,36px);box-shadow:0 24px 60px rgba(0,0,0,.7)}
+.contact-form{display:flex;flex-direction:column;gap:18px;margin-top:16px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-label{font-size:10px;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase}
+.form-input{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:2px;color:var(--ink);font-family:inherit;font-size:13.5px;padding:11px 13px;outline:none;transition:border-color .2s,background .2s}
+.form-input:focus{border-color:var(--line2);background:rgba(255,255,255,.055)}
+.form-input::placeholder{color:var(--ink3);opacity:.7}
+.form-textarea{min-height:96px;resize:vertical;line-height:1.55}
+.form-submit-btn{margin-top:6px;background:var(--ink);color:var(--bg);padding:13px 18px;border:1px solid var(--ink);border-radius:2px;font-size:11px;letter-spacing:.18em;font-weight:600;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.form-submit-btn:hover:not(:disabled){background:transparent;color:var(--ink);border-color:var(--line2)}
+.form-submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.form-status{font-size:11px;letter-spacing:.08em;min-height:16px;line-height:1.4}
+.form-foot-note{margin-top:10px;padding-top:14px;border-top:1px solid var(--line);font-size:10px;letter-spacing:.08em;color:var(--ink3);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.form-foot-note a{color:var(--ink2);text-decoration:none;border-bottom:1px dotted var(--line2);transition:color .2s}
+.form-foot-note a:hover{color:var(--ink)}
+
+/* ============================================================
    REDUCED MOTION
    ============================================================ */
 @media (prefers-reduced-motion: reduce){
@@ -695,8 +714,8 @@ setTimeout(function(){
               <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M2.8 1.5h5.7v5.7"/></svg></a></li>
           </ul>
 
-          <!-- ================= GET IN TOUCH (EMAIL CALL TO ACTION) ================= -->
-          <a class="cta about-cta reveal" id="ctaContact" href="mailto:bharathburji@gmail.com?subject=Video%20Editing%20Inquiry%20%7C%20Bharath%20Burji&body=Hi%20Bharath%2C%0D%0A%0D%0AI%20came%20across%20your%20portfolio%20and%20would%20love%20to%20discuss%20a%20video%20editing%20project%20with%20you.%0D%0A%0D%0ACould%20we%20connect%20to%20discuss%20the%20details%3F%0D%0A%0D%0ABest%20regards%2C" onclick="window.location.href=this.href;return false;" aria-label="Send video editing inquiry email">
+          <!-- ================= GET IN TOUCH (CALL TO ACTION) ================= -->
+          <a class="cta about-cta reveal" id="ctaContact" href="#contactModal" aria-label="Open contact form to send video editing inquiry">
             <span class="cta-in">
               <span class="cta-top mono">
                 <span>03 — GET IN TOUCH</span>
@@ -775,6 +794,61 @@ setTimeout(function(){
   </div>
 </div>
 
+<!-- ================= CONTACT MODAL (WEB3FORMS) ================= -->
+<div id="contactModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cModalTitle" hidden>
+  <div class="modal-bg" data-close-contact></div>
+  <div class="modal-body contact-modal-body" id="cModalBody">
+    <div class="modal-top">
+      <div>
+        <p class="mono modal-meta" style="color:var(--accent);margin-bottom:6px">DIRECT TRANSMISSION</p>
+        <h3 id="cModalTitle">GET IN TOUCH</h3>
+      </div>
+      <button class="icon-btn" id="cModalClose" type="button" aria-label="Close contact modal" data-close-contact>
+        <svg viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13"/></svg>
+      </button>
+    </div>
+
+    <form id="contactForm" class="contact-form" novalidate>
+      <input type="hidden" name="access_key" value="6f9ca692-7902-418c-9573-a6e0714d9a5c">
+      <input type="hidden" name="subject" value="Video Editing Inquiry | Bharath Burji">
+      <input type="hidden" name="from_name" value="Bharath Portfolio">
+      <input type="checkbox" name="botcheck" class="hidden" style="display:none">
+
+      <div class="form-group">
+        <label for="cName" class="form-label mono">01 — YOUR NAME</label>
+        <input type="text" id="cName" name="name" class="form-input" placeholder="e.g. Alex Rivera" required autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label for="cEmail" class="form-label mono">02 — EMAIL ADDRESS</label>
+        <input type="email" id="cEmail" name="email" class="form-input" placeholder="e.g. alex@studio.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="cMessage" class="form-label mono">03 — PROJECT BRIEF / MESSAGE</label>
+        <textarea id="cMessage" name="message" class="form-input form-textarea" rows="4" placeholder="Tell me about your project, timeline, and vision..." required>Hi Bharath,
+
+I came across your portfolio and would love to discuss a video editing project with you.
+
+Could we connect to discuss the details?
+
+Best regards,</textarea>
+      </div>
+
+      <button type="submit" id="cSubmitBtn" class="form-submit-btn mono">
+        <span class="btn-text">TRANSMIT INQUIRY →</span>
+      </button>
+
+      <div id="cFormStatus" class="form-status mono" role="status" aria-live="polite"></div>
+
+      <div class="form-foot-note mono">
+        <span>PREFER DIRECT EMAIL?</span>
+        <a id="cFallbackMailto" href="mailto:bharathburji@gmail.com?subject=Video%20Editing%20Inquiry%20%7C%20Bharath%20Burji">BHARATHBURJI@GMAIL.COM ↗</a>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
@@ -784,6 +858,9 @@ setTimeout(function(){
    Update your social media links, WhatsApp number, and About photo here.
    ============================================================ */
 const CONFIG = {
+  // Web3Forms Access Key for direct contact form submissions
+  web3formsKey: '6f9ca692-7902-418c-9573-a6e0714d9a5c',
+
   // 1. WhatsApp Contact Integration
   // Enter your country code + phone number without '+' or spaces. Example: '919876543210' (for India +91)
   whatsappNumber: 'COUNTRYCODEPHONENUMBER',
@@ -814,11 +891,13 @@ const EMAIL_INQUIRY_HREF = 'mailto:bharathburji@gmail.com?subject=Video%20Editin
 
 // Hydrate links and images across the page from CONFIG
 function applyProfileConfig() {
-  // Contact CTA button in About section
+  // Contact CTA button in About section -> opens contact modal
   const cta = document.getElementById('ctaContact') || document.getElementById('ctaWhatsapp');
   if (cta) {
-    cta.href = EMAIL_INQUIRY_HREF;
-    cta.onclick = function(e) { e.preventDefault(); window.location.href = EMAIL_INQUIRY_HREF; };
+    cta.onclick = function(e) {
+      e.preventDefault();
+      openContactModal();
+    };
   }
 
   // About section social links
@@ -837,7 +916,13 @@ function applyProfileConfig() {
   const mLi = document.getElementById('mLinkLinkedin');
   if (mLi && CONFIG.linkedin) mLi.href = CONFIG.linkedin;
   const mEm = document.getElementById('mLinkEmail');
-  if (mEm) mEm.href = EMAIL_INQUIRY_HREF;
+  if (mEm) {
+    mEm.onclick = function(e) {
+      e.preventDefault();
+      closeMenu();
+      openContactModal();
+    };
+  }
 
   // About section photograph and caption
   const aboutImg = document.getElementById('aboutImg');
@@ -1919,8 +2004,133 @@ mTrack.addEventListener('keydown', e => {
   }
 });
 
+/* ============================================================
+   CONTACT MODAL LOGIC (WEB3FORMS)
+   ============================================================ */
+const contactModal = document.getElementById('contactModal');
+const contactForm = document.getElementById('contactForm');
+const cSubmitBtn = document.getElementById('cSubmitBtn');
+const cFormStatus = document.getElementById('cFormStatus');
+let closingContactModal = false;
+let lastContactFocus = null;
+
+function openContactModal(){
+  if (!contactModal) return;
+  lastContactFocus = document.activeElement;
+  contactModal.hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => contactModal.classList.add('open')));
+  document.documentElement.classList.add('locked');
+  if (typeof lenis !== 'undefined' && lenis) lenis.stop();
+  stopAllPreviews();
+  const firstInput = document.getElementById('cName');
+  if (firstInput) setTimeout(() => firstInput.focus(), 80);
+}
+
+function closeContactModal(){
+  if (!contactModal || contactModal.hidden) return;
+  closingContactModal = true;
+  contactModal.classList.remove('open');
+  document.documentElement.classList.remove('locked');
+  if (typeof lenis !== 'undefined' && lenis) lenis.start();
+  setTimeout(() => {
+    contactModal.hidden = true;
+    closingContactModal = false;
+  }, 320);
+  if (lastContactFocus && lastContactFocus.focus) lastContactFocus.focus();
+}
+
+if (contactModal){
+  contactModal.querySelectorAll('[data-close-contact]').forEach(el => {
+    el.addEventListener('click', closeContactModal);
+  });
+}
+
+if (contactForm){
+  contactForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const nameInput = document.getElementById('cName');
+    const emailInput = document.getElementById('cEmail');
+    const msgInput = document.getElementById('cMessage');
+
+    if (!nameInput || !nameInput.value.trim()){
+      cFormStatus.innerHTML = '<span style="color:var(--accent)">✕ Please enter your name.</span>';
+      if (nameInput) nameInput.focus();
+      return;
+    }
+    if (!emailInput || !emailInput.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())){
+      cFormStatus.innerHTML = '<span style="color:var(--accent)">✕ Please enter a valid email address.</span>';
+      if (emailInput) emailInput.focus();
+      return;
+    }
+    if (!msgInput || !msgInput.value.trim()){
+      cFormStatus.innerHTML = '<span style="color:var(--accent)">✕ Please enter a message.</span>';
+      if (msgInput) msgInput.focus();
+      return;
+    }
+
+    const btnText = cSubmitBtn ? cSubmitBtn.querySelector('.btn-text') : null;
+    if (cSubmitBtn) cSubmitBtn.disabled = true;
+    if (btnText) btnText.textContent = 'TRANSMITTING...';
+    cFormStatus.innerHTML = '<span style="color:var(--ink2)">Sending transmission to Bharath...</span>';
+
+    try {
+      const formData = new FormData(contactForm);
+      const json = JSON.stringify(Object.fromEntries(formData));
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: json
+      });
+
+      const data = await response.json();
+      if (response.status === 200 && data.success){
+        cFormStatus.innerHTML = '<span style="color:#4ade80">✓ Inquiry transmitted! Bharath will respond shortly.</span>';
+        if (btnText) btnText.textContent = 'TRANSMITTED ✓';
+        setTimeout(() => {
+          closeContactModal();
+          setTimeout(() => {
+            contactForm.reset();
+            cFormStatus.innerHTML = '';
+            if (btnText) btnText.textContent = 'TRANSMIT INQUIRY →';
+            if (cSubmitBtn) cSubmitBtn.disabled = false;
+          }, 350);
+        }, 2200);
+      } else {
+        cFormStatus.innerHTML = `<span style="color:var(--accent)">✕ ${data.message || 'Submission error. Please try again.'}</span>`;
+        if (cSubmitBtn) cSubmitBtn.disabled = false;
+        if (btnText) btnText.textContent = 'TRANSMIT INQUIRY →';
+      }
+    } catch(err){
+      cFormStatus.innerHTML = '<span style="color:var(--accent)">✕ Network error. Please try again or use direct email.</span>';
+      if (cSubmitBtn) cSubmitBtn.disabled = false;
+      if (btnText) btnText.textContent = 'TRANSMIT INQUIRY →';
+    }
+  });
+
+  contactForm.addEventListener('input', () => {
+    if (cFormStatus && cFormStatus.textContent && !cFormStatus.textContent.includes('✓')){
+      cFormStatus.innerHTML = '';
+    }
+  });
+}
+
 /* keyboard: Esc, Space/K, M, arrows, focus trap */
 document.addEventListener('keydown', e => {
+  if (contactModal && !contactModal.hidden){
+    if (e.key === 'Escape'){ closeContactModal(); return; }
+    if (e.key === 'Tab'){
+      const f = [...contactModal.querySelectorAll('button, input, textarea, a, [tabindex="0"]')].filter(el => !el.disabled && el.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length-1];
+      if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+    return;
+  }
   if (modal.hidden){ if (e.key === 'Escape') closeMenu(); return; }
   if (e.key === 'Escape'){ closeModal(); }
   else if (e.key === ' ' || e.key.toLowerCase() === 'k'){
